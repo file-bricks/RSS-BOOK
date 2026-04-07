@@ -135,7 +135,6 @@ document.getElementById("exportAllBtn").addEventListener("click", async () => {
     const count = await exportAllFeedsToFolder(feeds);
     showStatus("feedStatus", t("optionsExported", [String(count)]));
   } catch (err) {
-    if (err.name === "AbortError") return; // user cancelled picker
     showStatus("feedStatus", t("popupError", [err.message]), true);
   }
 });
@@ -188,7 +187,7 @@ async function renderFeeds() {
         </label>
       </div>
       <div class="feed-actions">
-        ${feed.bookmarkFolderId ? `<button data-action="export" data-folder-id="${feed.bookmarkFolderId}">${t("optionsExportFolder")}</button>` : ""}
+        ${feed.bookmarkFolderId ? `<button data-action="export" data-folder-id="${feed.bookmarkFolderId}" data-feed-title="${escapeHtml(feed.title || feed.url)}">${t("optionsExportFolder")}</button>` : ""}
       </div>
     `;
 
@@ -219,10 +218,9 @@ async function renderFeeds() {
     if (exportBtn) {
       exportBtn.addEventListener("click", async () => {
         try {
-          const count = await exportFeedToFolder(exportBtn.dataset.folderId);
+          const count = await exportFeedToFolder(exportBtn.dataset.folderId, exportBtn.dataset.feedTitle);
           showStatus("feedStatus", t("optionsExported", [String(count)]));
         } catch (err) {
-          if (err.name === "AbortError") return;
           showStatus("feedStatus", t("popupError", [err.message]), true);
         }
       });

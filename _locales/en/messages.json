@@ -42,6 +42,9 @@
       }
     }
   },
+  "popupOpenFeeds": {
+    "message": "Open feeds"
+  },
   "popupDiscoverFeeds": {
     "message": "Discover feeds"
   },

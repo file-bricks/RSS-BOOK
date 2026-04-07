@@ -1,4 +1,4 @@
-import { getAllFeeds, upsertFeed } from "../lib/storage.js";
+import { getAllFeeds, upsertFeed, getSettings } from "../lib/storage.js";
 import { t, applyI18n } from "../lib/i18n.js";
 
 const feedList = document.getElementById("feedList");
@@ -145,6 +145,18 @@ function showDiscoveredFeeds(feeds) {
     discoverSection.appendChild(row);
   }
 }
+
+// Open feeds in bookmark manager
+document.getElementById("openFeedsBtn").addEventListener("click", async () => {
+  const settings = await getSettings();
+  const folderId = settings.rootFolderId || "";
+  const isEdge = navigator.userAgent.includes("Edg/");
+  const url = isEdge
+    ? `edge://favorites/${folderId ? "?id=" + folderId : ""}`
+    : `chrome://bookmarks/${folderId ? "?id=" + folderId : ""}`;
+  await chrome.tabs.create({ url });
+  window.close();
+});
 
 // Settings
 document.getElementById("optionsBtn").addEventListener("click", () => {
