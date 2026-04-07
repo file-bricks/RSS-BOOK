@@ -1,8 +1,4 @@
-# RSS-BOOK
-
-**Lightweight RSS/Atom feed reader that saves entries as browser bookmarks.**
-
-No account. No cloud. No tracking. Just feeds → bookmarks.
+![RSS-BOOK](assets/social-preview.png)
 
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
