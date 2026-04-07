@@ -135,6 +135,7 @@ document.getElementById("exportAllBtn").addEventListener("click", async () => {
     const count = await exportAllFeedsToFolder(feeds);
     showStatus("feedStatus", t("optionsExported", [String(count)]));
   } catch (err) {
+    if (err.name === "AbortError") return;
     showStatus("feedStatus", t("popupError", [err.message]), true);
   }
 });
@@ -218,9 +219,10 @@ async function renderFeeds() {
     if (exportBtn) {
       exportBtn.addEventListener("click", async () => {
         try {
-          const count = await exportFeedToFolder(exportBtn.dataset.folderId, exportBtn.dataset.feedTitle);
+          const count = await exportFeedToFolder(exportBtn.dataset.folderId);
           showStatus("feedStatus", t("optionsExported", [String(count)]));
         } catch (err) {
+          if (err.name === "AbortError") return;
           showStatus("feedStatus", t("popupError", [err.message]), true);
         }
       });
