@@ -82,7 +82,7 @@ RSS-BOOK/
 - [x] OPML import/export
 - [x] English UI with German translation (i18n)
 - [x] Dark mode (automatic via `prefers-color-scheme`)
-- [x] Folder export as `.url` files (File System Access API)
+- [ ] Folder export as `.url` files (planned for future release)
 - [x] Feed autodiscovery (`<link rel="alternate">`)
 - [x] Per-feed error display (no more silent failures)
 - [x] Configurable bookmark folder name

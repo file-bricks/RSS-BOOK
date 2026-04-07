@@ -1,6 +1,5 @@
 import { getState, upsertFeed, removeFeed, updateSettings, getAllFeeds } from "../lib/storage.js";
 import { generateOPML, parseOPML } from "../lib/opml.js";
-import { exportFeedToFolder, exportAllFeedsToFolder } from "../lib/export.js";
 import { t, applyI18n } from "../lib/i18n.js";
 
 // --- Settings ---
@@ -127,19 +126,6 @@ document.getElementById("exportOPMLBtn").addEventListener("click", async () => {
   showStatus("feedStatus", t("optionsOPMLExported"));
 });
 
-// --- Folder Export (all feeds) ---
-
-document.getElementById("exportAllBtn").addEventListener("click", async () => {
-  try {
-    const feeds = await getAllFeeds();
-    const count = await exportAllFeedsToFolder(feeds);
-    showStatus("feedStatus", t("optionsExported", [String(count)]));
-  } catch (err) {
-    if (err.name === "AbortError") return;
-    showStatus("feedStatus", t("popupError", [err.message]), true);
-  }
-});
-
 // --- Feed List ---
 
 async function renderFeeds() {
@@ -187,9 +173,7 @@ async function renderFeeds() {
           <input type="number" data-field="retentionDays" data-id="${feed.id}" value="${feed.retentionDays || 0}" min="0">
         </label>
       </div>
-      <div class="feed-actions">
-        ${feed.bookmarkFolderId ? `<button data-action="export" data-folder-id="${feed.bookmarkFolderId}" data-feed-title="${escapeHtml(feed.title || feed.url)}">${t("optionsExportFolder")}</button>` : ""}
-      </div>
+      <div class="feed-actions"></div>
     `;
 
     // Field changes
@@ -213,20 +197,6 @@ async function renderFeeds() {
       await removeFeed(feed.id);
       await renderFeeds();
     });
-
-    // Export single feed
-    const exportBtn = card.querySelector("[data-action='export']");
-    if (exportBtn) {
-      exportBtn.addEventListener("click", async () => {
-        try {
-          const count = await exportFeedToFolder(exportBtn.dataset.folderId);
-          showStatus("feedStatus", t("optionsExported", [String(count)]));
-        } catch (err) {
-          if (err.name === "AbortError") return;
-          showStatus("feedStatus", t("popupError", [err.message]), true);
-        }
-      });
-    }
 
     list.appendChild(card);
   }

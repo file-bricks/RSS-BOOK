@@ -6,7 +6,7 @@
 - **OPML Import/Export** — migrate feeds from/to other readers (Feedly, Thunderbird, etc.)
 - **i18n** — English UI (default) with German translation via Chrome i18n API
 - **Dark Mode** — automatic via `prefers-color-scheme`, popup and options page
-- **Folder Export** — export bookmarks as `.url` files to local filesystem (File System Access API)
+- ~~Folder Export~~ — deferred to future release (browser security restrictions)
 - **Feed Autodiscovery** — detect RSS/Atom feeds on the current page via `<link rel="alternate">`
 - **Error Handling** — per-feed error display in popup and options (no longer silent failures)
 - **Configurable root folder** — bookmark folder name can be changed in settings (default: "RSS")
