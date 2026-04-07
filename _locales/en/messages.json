@@ -122,6 +122,12 @@
   "optionsFolderInfo": {
     "message": "Feeds are saved in this bookmark folder. Renaming or moving the folder in your bookmarks is safe."
   },
+  "optionsDeleteBookmarks": {
+    "message": "Delete bookmarks when unsubscribing"
+  },
+  "optionsDeleteBookmarksInfo": {
+    "message": "Off: bookmarks are kept after unsubscribing. On: bookmark folder is removed together with the feed."
+  },
   "optionsFeedError": {
     "message": "Error: $1",
     "placeholders": {

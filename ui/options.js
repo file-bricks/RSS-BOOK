@@ -10,13 +10,15 @@ async function loadSettings() {
   document.getElementById("updateOnStartup").checked = settings.updateOnStartup;
   document.getElementById("globalInterval").value = settings.globalIntervalMinutes || 0;
   document.getElementById("rootFolderName").value = settings.rootFolderName || "RSS";
+  document.getElementById("deleteBookmarks").checked = settings.deleteBookmarksOnUnsubscribe || false;
 }
 
 document.getElementById("saveSettings").addEventListener("click", async () => {
   await updateSettings({
     updateOnStartup: document.getElementById("updateOnStartup").checked,
     globalIntervalMinutes: Number(document.getElementById("globalInterval").value) || 0,
-    rootFolderName: document.getElementById("rootFolderName").value.trim() || "RSS"
+    rootFolderName: document.getElementById("rootFolderName").value.trim() || "RSS",
+    deleteBookmarksOnUnsubscribe: document.getElementById("deleteBookmarks").checked
   });
   showStatus("settingsStatus", t("optionsSaved"));
 });
@@ -202,6 +204,12 @@ async function renderFeeds() {
 
     // Remove feed
     card.querySelector("[data-action='remove']").addEventListener("click", async () => {
+      const { settings } = await getState();
+      if (settings.deleteBookmarksOnUnsubscribe && feed.bookmarkFolderId) {
+        try {
+          await chrome.bookmarks.removeTree(feed.bookmarkFolderId);
+        } catch { /* folder already gone */ }
+      }
       await removeFeed(feed.id);
       await renderFeeds();
     });

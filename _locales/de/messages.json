@@ -122,6 +122,12 @@
   "optionsFolderInfo": {
     "message": "Feeds werden in diesem Lesezeichen-Ordner gespeichert. Umbenennen oder Verschieben des Ordners ist sicher."
   },
+  "optionsDeleteBookmarks": {
+    "message": "Lesezeichen beim Deabonnieren löschen"
+  },
+  "optionsDeleteBookmarksInfo": {
+    "message": "Aus: Lesezeichen bleiben nach dem Deabonnieren erhalten. An: Lesezeichen-Ordner wird zusammen mit dem Feed entfernt."
+  },
   "optionsFeedError": {
     "message": "Fehler: $1",
     "placeholders": {
