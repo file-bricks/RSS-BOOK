@@ -1,0 +1,16 @@
+# Interne Dateien
+AUFGABEN.txt
+RELEASE_PLAN.md
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Packages
+node_modules/
+*.zip

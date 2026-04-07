@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { width: 320px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 13px; color: #1a1a1a; padding: 12px; }
+    h1 { font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    h1 span { color: #e63946; }
+    .feed-list { max-height: 300px; overflow-y: auto; }
+    .feed-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #eee; }
+    .feed-item:last-child { border-bottom: none; }
+    .feed-name { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+    .feed-count { font-size: 11px; color: #888; }
+    .empty { color: #999; font-style: italic; padding: 16px 0; text-align: center; }
+    .actions { margin-top: 10px; display: flex; gap: 6px; }
+    button { padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; background: #fff; cursor: pointer; font-size: 12px; }
+    button:hover { background: #f5f5f5; }
+    button.primary { background: #e63946; color: #fff; border-color: #e63946; }
+    button.primary:hover { background: #c5303c; }
+    .status { font-size: 11px; color: #888; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <h1>RSS<span>:</span>BOOK</h1>
+  <div id="feedList" class="feed-list"></div>
+  <div class="actions">
+    <button id="updateBtn" class="primary">Jetzt aktualisieren</button>
+    <button id="optionsBtn">Einstellungen</button>
+  </div>
+  <div id="status" class="status"></div>
+  <script src="popup.js" type="module"></script>
+</body>
+</html>
