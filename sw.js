@@ -43,7 +43,17 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
 
 async function ensureAlarm() {
   const { settings } = await getState();
-  const interval = settings?.globalIntervalMinutes ?? 0;
+  let interval = settings?.globalIntervalMinutes ?? 0;
+
+  // If no global interval, use smallest per-feed interval as fallback
+  if (interval <= 0) {
+    const feeds = await getEnabledFeeds();
+    const feedIntervals = feeds.map(f => f.intervalMinutes).filter(m => m > 0);
+    if (feedIntervals.length > 0) {
+      interval = Math.min(...feedIntervals);
+    }
+  }
+
   const existing = await chrome.alarms.get(ALARM_NAME);
 
   if (interval <= 0) {
