@@ -81,13 +81,17 @@ RSS-BOOK/
 └── icons/               # Extension icons (16, 48, 128)
 ```
 
-## Roadmap (v1.1)
+## What's new in v1.1
 
-- [ ] OPML import/export
-- [ ] English UI (i18n)
-- [ ] Dark mode
-- [ ] Folder export (File System Access API)
-- [ ] Feed autodiscovery (`<link rel="alternate">`)
+- [x] OPML import/export
+- [x] English UI with German translation (i18n)
+- [x] Dark mode (automatic via `prefers-color-scheme`)
+- [x] Folder export as `.url` files (File System Access API)
+- [x] Feed autodiscovery (`<link rel="alternate">`)
+- [x] Per-feed error display (no more silent failures)
+- [x] Configurable bookmark folder name
+- [x] Bookmark folder survives rename/move (tracked by ID)
+- [x] Option to delete bookmarks on unsubscribe
 
 ## License
 
