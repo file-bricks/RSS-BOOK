@@ -7,11 +7,10 @@ const ALARM_NAME = "rss-book-tick";
 // --- Lifecycle ---
 
 chrome.runtime.onInstalled.addListener(async () => {
-  // Check raw storage, not getState() which always returns defaults
   const raw = await chrome.storage.local.get(["settings", "feeds"]);
   if (!raw.settings) {
     await chrome.storage.local.set({
-      settings: { updateOnStartup: true, globalIntervalMinutes: 0 },
+      settings: { updateOnStartup: true, globalIntervalMinutes: 0, rootFolderName: "RSS", rootFolderId: "" },
       feeds: raw.feeds || {}
     });
   }
@@ -35,10 +34,9 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
   await runUpdateCycle("alarm");
 });
 
-// React to settings changes (e.g. from options page)
 chrome.storage.onChanged.addListener(async (changes, area) => {
-  if (area !== "local" || !changes.settings) return;
-  await ensureAlarm();
+  if (area !== "local") return;
+  if (changes.settings || changes.feeds) await ensureAlarm();
 });
 
 async function ensureAlarm() {
@@ -61,7 +59,6 @@ async function ensureAlarm() {
     return;
   }
 
-  // Always recreate if missing or interval changed
   if (!existing || Math.abs((existing.periodInMinutes || 0) - interval) > 0.01) {
     await chrome.alarms.clear(ALARM_NAME);
     await chrome.alarms.create(ALARM_NAME, { periodInMinutes: interval });
@@ -84,10 +81,11 @@ async function runUpdateCycle(reason) {
       await updateOneFeed(feed.id);
     } catch (err) {
       console.error(`[RSS-BOOK] Error updating feed ${feed.url}:`, err);
+      await upsertFeed(feed.id, { lastError: err.message, lastFetch: Date.now() });
     }
   }
 
-  // Retention pass — re-read feeds from storage to get fresh bookmarkFolderIds
+  // Retention pass
   const freshFeeds = await getEnabledFeeds();
   for (const feed of freshFeeds) {
     try {
@@ -109,13 +107,15 @@ async function updateOneFeed(feedId) {
   });
 
   if (!parsed) {
-    await upsertFeed(feedId, { lastFetch: Date.now() });
+    await upsertFeed(feedId, { lastFetch: Date.now(), lastError: "Feed not reachable or invalid format" });
     return;
   }
 
+  // Clear previous error on success
   if (parsed.items.length === 0) {
     await upsertFeed(feedId, {
       lastFetch: Date.now(),
+      lastError: "",
       lastEtag: parsed.etag || feed.lastEtag,
       lastModified: parsed.lastModified || feed.lastModified
     });
@@ -138,6 +138,7 @@ async function updateOneFeed(feedId) {
   await upsertFeed(feedId, {
     bookmarkFolderId: folderId,
     lastFetch: Date.now(),
+    lastError: "",
     lastEtag: parsed.etag ?? feed.lastEtag,
     lastModified: parsed.lastModified ?? feed.lastModified,
     title: feed.title || parsed.title
@@ -146,33 +147,55 @@ async function updateOneFeed(feedId) {
 
 async function notify(feedTitle, count, titles) {
   const message = titles.slice(0, 3).map(t => "\u2022 " + t).join("\n");
+  const countText = chrome.i18n?.getMessage?.("notifyNewEntries", [String(count)]) || `${count} new`;
   await chrome.notifications.create({
     type: "basic",
     iconUrl: "icons/48.png",
-    title: `${feedTitle}: ${count} neu`,
-    message: message || "Neue Eintr\u00e4ge verf\u00fcgbar"
+    title: `${feedTitle}: ${countText}`,
+    message: message || (chrome.i18n?.getMessage?.("notifyEntriesAvailable") || "New entries available")
   });
 }
 
-// --- Message handling (from popup/options) ---
+// --- Message handling ---
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.action === "updateAll") {
     runUpdateCycle("manual")
       .then(() => sendResponse({ ok: true }))
-      .catch((err) => {
-        console.error("[RSS-BOOK] updateAll failed:", err);
-        sendResponse({ ok: false, error: err.message });
-      });
+      .catch((err) => sendResponse({ ok: false, error: err.message }));
     return true;
   }
   if (msg.action === "updateFeed") {
     updateOneFeed(msg.feedId)
       .then(() => sendResponse({ ok: true }))
-      .catch((err) => {
-        console.error("[RSS-BOOK] updateFeed failed:", err);
-        sendResponse({ ok: false, error: err.message });
-      });
+      .catch((err) => sendResponse({ ok: false, error: err.message }));
+    return true;
+  }
+  if (msg.action === "discoverFeeds") {
+    discoverFeedsOnTab(msg.tabId)
+      .then((feeds) => sendResponse({ ok: true, feeds }))
+      .catch((err) => sendResponse({ ok: false, error: err.message, feeds: [] }));
     return true;
   }
 });
+
+// --- Feed Autodiscovery ---
+
+async function discoverFeedsOnTab(tabId) {
+  const results = await chrome.scripting.executeScript({
+    target: { tabId },
+    func: () => {
+      const links = document.querySelectorAll(
+        'link[rel="alternate"][type="application/rss+xml"], ' +
+        'link[rel="alternate"][type="application/atom+xml"], ' +
+        'link[rel="alternate"][type="text/xml"], ' +
+        'link[rel="alternate"][type="application/xml"]'
+      );
+      return [...links].map(l => ({
+        url: l.href,
+        title: l.title || ""
+      }));
+    }
+  });
+  return results?.[0]?.result || [];
+}

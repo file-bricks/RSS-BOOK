@@ -1,0 +1,163 @@
+{
+  "extName": {
+    "message": "RSS-BOOK"
+  },
+  "extDescription": {
+    "message": "Lightweight RSS/Atom reader that saves feed entries as browser bookmarks. No account, no cloud, no tracking."
+  },
+  "popupUpdateAll": {
+    "message": "Update now"
+  },
+  "popupSettings": {
+    "message": "Settings"
+  },
+  "popupNoFeeds": {
+    "message": "No feeds subscribed. Click Settings."
+  },
+  "popupJustNow": {
+    "message": "just now"
+  },
+  "popupMinAgo": {
+    "message": "$1 min ago",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNeverUpdated": {
+    "message": "never updated"
+  },
+  "popupUpdating": {
+    "message": "Updating..."
+  },
+  "popupDone": {
+    "message": "Done!"
+  },
+  "popupError": {
+    "message": "Error: $1",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupDiscoverFeeds": {
+    "message": "Discover feeds"
+  },
+  "popupFeedsFound": {
+    "message": "$1 feed(s) found on this page",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNoFeedsFound": {
+    "message": "No feeds found on this page"
+  },
+  "popupFeedAdded": {
+    "message": "Feed added!"
+  },
+  "optionsTitle": {
+    "message": "Settings"
+  },
+  "optionsGlobal": {
+    "message": "Global Settings"
+  },
+  "optionsStartupUpdate": {
+    "message": "Update all feeds on browser startup"
+  },
+  "optionsGlobalInterval": {
+    "message": "Global interval (minutes, 0 = manual/startup only):"
+  },
+  "optionsSave": {
+    "message": "Save settings"
+  },
+  "optionsSaved": {
+    "message": "Saved!"
+  },
+  "optionsAddFeed": {
+    "message": "Add new feed"
+  },
+  "optionsAdd": {
+    "message": "Add"
+  },
+  "optionsFeeds": {
+    "message": "Feeds"
+  },
+  "optionsNoFeeds": {
+    "message": "No feeds subscribed yet."
+  },
+  "optionsUnsubscribe": {
+    "message": "Unsubscribe"
+  },
+  "optionsActive": {
+    "message": "Active"
+  },
+  "optionsNotify": {
+    "message": "Notification"
+  },
+  "optionsInterval": {
+    "message": "Interval (min):"
+  },
+  "optionsRetention": {
+    "message": "Keep (days):"
+  },
+  "optionsImportOPML": {
+    "message": "Import OPML"
+  },
+  "optionsExportOPML": {
+    "message": "Export OPML"
+  },
+  "optionsExportFolder": {
+    "message": "Export to folder"
+  },
+  "optionsExportAllFolders": {
+    "message": "Export all feeds"
+  },
+  "optionsRootFolder": {
+    "message": "Bookmark folder name:"
+  },
+  "optionsFolderInfo": {
+    "message": "Feeds are saved in this bookmark folder. Renaming or moving the folder in your bookmarks is safe."
+  },
+  "optionsFeedError": {
+    "message": "Error: $1",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsOPMLImported": {
+    "message": "$1 feed(s) imported",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsOPMLExported": {
+    "message": "OPML exported"
+  },
+  "optionsExported": {
+    "message": "$1 bookmark(s) exported",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifyNewEntries": {
+    "message": "$1 new",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifyEntriesAvailable": {
+    "message": "New entries available"
+  }
+}

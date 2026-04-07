@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.1.0] — 2026-04-07
+
+### Added
+- **OPML Import/Export** — migrate feeds from/to other readers (Feedly, Thunderbird, etc.)
+- **i18n** — English UI (default) with German translation via Chrome i18n API
+- **Dark Mode** — automatic via `prefers-color-scheme`, popup and options page
+- **Folder Export** — export bookmarks as `.url` files to local filesystem (File System Access API)
+- **Feed Autodiscovery** — detect RSS/Atom feeds on the current page via `<link rel="alternate">`
+- **Error Handling** — per-feed error display in popup and options (no longer silent failures)
+- **Configurable root folder** — bookmark folder name can be changed in settings (default: "RSS")
+
+### Fixed
+- Root folder tracked by ID instead of name — renaming or moving the RSS folder no longer creates duplicates
+- Alarm logic uses smallest per-feed interval as fallback when global interval is 0
+- Atom link extraction works regardless of attribute order (`rel="alternate"` + `href`)
+
+### Changed
+- Version bumped to 1.1.0
+- Added `activeTab` and `scripting` permissions for feed autodiscovery
+- UI uses CSS custom properties for consistent theming
+
 ## [1.0.0] — 2026-04-07
 
 ### Added

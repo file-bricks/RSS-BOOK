@@ -1,0 +1,163 @@
+{
+  "extName": {
+    "message": "RSS-BOOK"
+  },
+  "extDescription": {
+    "message": "Leichtgewichtiger RSS/Atom-Reader der Feed-Eintr\u00e4ge als Lesezeichen speichert. Kein Account, keine Cloud, kein Tracking."
+  },
+  "popupUpdateAll": {
+    "message": "Jetzt aktualisieren"
+  },
+  "popupSettings": {
+    "message": "Einstellungen"
+  },
+  "popupNoFeeds": {
+    "message": "Keine Feeds abonniert. Klicke auf Einstellungen."
+  },
+  "popupJustNow": {
+    "message": "gerade eben"
+  },
+  "popupMinAgo": {
+    "message": "vor $1 Min",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNeverUpdated": {
+    "message": "nie aktualisiert"
+  },
+  "popupUpdating": {
+    "message": "Aktualisiere..."
+  },
+  "popupDone": {
+    "message": "Fertig!"
+  },
+  "popupError": {
+    "message": "Fehler: $1",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupDiscoverFeeds": {
+    "message": "Feeds erkennen"
+  },
+  "popupFeedsFound": {
+    "message": "$1 Feed(s) auf dieser Seite gefunden",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupNoFeedsFound": {
+    "message": "Keine Feeds auf dieser Seite gefunden"
+  },
+  "popupFeedAdded": {
+    "message": "Feed hinzugef\u00fcgt!"
+  },
+  "optionsTitle": {
+    "message": "Einstellungen"
+  },
+  "optionsGlobal": {
+    "message": "Globale Einstellungen"
+  },
+  "optionsStartupUpdate": {
+    "message": "Bei Browserstart alle Feeds aktualisieren"
+  },
+  "optionsGlobalInterval": {
+    "message": "Globales Intervall (Minuten, 0 = nur manuell/Start):"
+  },
+  "optionsSave": {
+    "message": "Einstellungen speichern"
+  },
+  "optionsSaved": {
+    "message": "Gespeichert!"
+  },
+  "optionsAddFeed": {
+    "message": "Neuen Feed hinzuf\u00fcgen"
+  },
+  "optionsAdd": {
+    "message": "Hinzuf\u00fcgen"
+  },
+  "optionsFeeds": {
+    "message": "Feeds"
+  },
+  "optionsNoFeeds": {
+    "message": "Noch keine Feeds abonniert."
+  },
+  "optionsUnsubscribe": {
+    "message": "Deabonnieren"
+  },
+  "optionsActive": {
+    "message": "Aktiv"
+  },
+  "optionsNotify": {
+    "message": "Benachrichtigung"
+  },
+  "optionsInterval": {
+    "message": "Intervall (Min):"
+  },
+  "optionsRetention": {
+    "message": "Behalten (Tage):"
+  },
+  "optionsImportOPML": {
+    "message": "OPML importieren"
+  },
+  "optionsExportOPML": {
+    "message": "OPML exportieren"
+  },
+  "optionsExportFolder": {
+    "message": "In Ordner exportieren"
+  },
+  "optionsExportAllFolders": {
+    "message": "Alle Feeds exportieren"
+  },
+  "optionsRootFolder": {
+    "message": "Lesezeichen-Ordnername:"
+  },
+  "optionsFolderInfo": {
+    "message": "Feeds werden in diesem Lesezeichen-Ordner gespeichert. Umbenennen oder Verschieben des Ordners ist sicher."
+  },
+  "optionsFeedError": {
+    "message": "Fehler: $1",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsOPMLImported": {
+    "message": "$1 Feed(s) importiert",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "optionsOPMLExported": {
+    "message": "OPML exportiert"
+  },
+  "optionsExported": {
+    "message": "$1 Lesezeichen exportiert",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifyNewEntries": {
+    "message": "$1 neu",
+    "placeholders": {
+      "1": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifyEntriesAvailable": {
+    "message": "Neue Eintr\u00e4ge verf\u00fcgbar"
+  }
+}
