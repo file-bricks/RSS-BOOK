@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.1] — 2026-04-08
+
+### Fixed
+- Service worker failed to start with `import() is disallowed on ServiceWorkerGlobalScope` — removed an unnecessary dynamic `import()` in `lib/bookmarks.js` (was guarding against a non-existent circular dependency). `upsertFeed` is now statically imported.
+
 ## [1.1.0] — 2026-04-07
 
 ### Added
