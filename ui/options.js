@@ -1,5 +1,6 @@
 import { getState, upsertFeed, removeFeed, updateSettings, getAllFeeds } from "../lib/storage.js";
 import { generateOPML, parseOPML } from "../lib/opml.js";
+import { exportAllFeedsToFolder } from "../lib/export.js";
 import { t, applyI18n } from "../lib/i18n.js";
 
 // --- Settings ---
@@ -124,6 +125,18 @@ document.getElementById("exportOPMLBtn").addEventListener("click", async () => {
   URL.revokeObjectURL(url);
 
   showStatus("feedStatus", t("optionsOPMLExported"));
+});
+
+// --- Folder Export ---
+
+document.getElementById("exportAllFoldersBtn").addEventListener("click", async () => {
+  try {
+    const feeds = await getAllFeeds();
+    const exported = await exportAllFeedsToFolder(feeds);
+    showStatus("feedStatus", t("optionsExported", [String(exported)]));
+  } catch (err) {
+    showStatus("feedStatus", t("popupError", [err.message]), true);
+  }
 });
 
 // --- Feed List ---

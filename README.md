@@ -54,6 +54,7 @@ Store listing is planned after the remaining browser and screenshot checks.
 - Set update intervals (global or per-feed)
 - Configure retention (auto-cleanup after N days)
 - Toggle notifications
+- Import/export OPML and export all feed bookmarks as `.url` files in folders
 
 ## Development
 
@@ -99,7 +100,7 @@ RSS-BOOK/
 - [x] OPML import/export
 - [x] English UI with German translation (i18n)
 - [x] Dark mode (automatic via `prefers-color-scheme`)
-- [ ] Folder export UI for `.url` files (core helper and tests present; options-page button pending)
+- [x] Folder export UI for `.url` files
 - [x] Feed autodiscovery (`<link rel="alternate">`, visible feed links, and common feed paths after a user click)
 - [x] Per-feed error display (no more silent failures)
 - [x] Configurable bookmark folder name

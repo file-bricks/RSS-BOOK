@@ -25,12 +25,17 @@ function makeElement({ attrs = {}, href = "", title = "", textContent = "" }) {
 test("collects feed links from alternate tags and visible anchors", () => {
   const links = [
     makeElement({
-      attrs: { type: "application/rss+xml" },
+      attrs: { rel: "alternate", type: "application/rss+xml" },
       href: "/rss.xml",
       title: "RSS feed"
     }),
     makeElement({
-      attrs: { type: "text/html" },
+      attrs: { rel: "alternate feed", type: "application/atom+xml" },
+      href: "/updates.atom",
+      title: "Atom updates"
+    }),
+    makeElement({
+      attrs: { rel: "alternate", type: "text/html" },
       href: "/not-a-feed",
       title: "Ignored"
     })
@@ -56,7 +61,7 @@ test("collects feed links from alternate tags and visible anchors", () => {
   globalThis.location = new URL("https://example.test/articles/post");
   globalThis.document = {
     querySelectorAll(selector) {
-      if (selector === 'link[rel="alternate"]') return links;
+      if (selector === "link[href]") return links;
       if (selector === "a[href]") return anchors;
       return [];
     }
@@ -66,6 +71,7 @@ test("collects feed links from alternate tags and visible anchors", () => {
     pageUrl: "https://example.test/articles/post",
     feeds: [
       { url: "https://example.test/rss.xml", title: "RSS feed" },
+      { url: "https://example.test/updates.atom", title: "Atom updates" },
       { url: "https://example.test/atom.xml", title: "Atom" }
     ]
   });
