@@ -12,6 +12,7 @@
 - Updated README permissions and privacy wording to match the activeTab/scripting discovery flow.
 - Updated privacy policy, security policy, contributing guide, code of conduct, and `.gitignore` for public repository hygiene.
 - Clarified that folder export has tested core helpers while the options-page UI is still pending.
+- Extracted feed-discovery helpers from the service worker into a testable module.
 - Bumped extension manifest version to 1.1.2.
 
 ### Verified
