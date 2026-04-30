@@ -4,6 +4,10 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
 
+## Screenshot
+
+![RSS-BOOK Screenshot](README/screenshots/main_view.png)
+
 ---
 
 ## How it works
@@ -23,7 +27,7 @@ Your feeds live in your bookmarks — accessible everywhere your browser syncs, 
 - **Per-feed intervals** — each feed can have its own update schedule
 - **Retention** — auto-remove bookmarks older than N days
 - **Notifications** — desktop alerts for new entries
-- **Privacy-first** — zero data collection, zero telemetry, zero network calls except your feeds
+- **Privacy-first** — zero data collection, zero telemetry; network calls are limited to configured feeds and feed discovery you explicitly trigger
 - **Unsubscribe preserves bookmarks** — remove a feed, keep the entries
 
 ## Install
@@ -37,17 +41,27 @@ Your feeds live in your bookmarks — accessible everywhere your browser syncs, 
 
 ### Edge Add-ons (coming soon)
 
-Store listing planned for v1.1.
+Store listing is planned after the remaining browser and screenshot checks.
 
 ## Usage
 
 **Popup** — click the extension icon to see your feeds and trigger a manual update.
+
+**Discover feeds** — click *Discover feeds* on a page to look for RSS/Atom links in the current tab and common feed paths on that site's origin.
 
 **Options** — right-click the icon → *Options* (or open from popup) to:
 - Add/remove feeds
 - Set update intervals (global or per-feed)
 - Configure retention (auto-cleanup after N days)
 - Toggle notifications
+
+## Development
+
+RSS-BOOK has no build step. The repository includes dependency-free Node tests:
+
+```bash
+node --test tests/*.test.mjs
+```
 
 ## Permissions
 
@@ -57,7 +71,9 @@ Store listing planned for v1.1.
 | `storage` | Store feed config and cache metadata locally |
 | `alarms` | Schedule periodic feed updates |
 | `notifications` | Alert you about new feed entries |
-| `<all_urls>` | Fetch feeds from any domain (feeds can be hosted anywhere) |
+| `activeTab` | Inspect the current tab only when you click feed discovery |
+| `scripting` | Run the feed-discovery scanner in the current tab after your click |
+| `<all_urls>` | Fetch configured feeds and probe common feed paths during explicit discovery |
 
 See [PRIVACY_POLICY.md](PRIVACY_POLICY.md) for details.
 
@@ -74,16 +90,17 @@ RSS-BOOK/
 ├── ui/
 │   ├── popup.html/js    # Extension popup
 │   └── options.html/js  # Settings page
-└── icons/               # Extension icons (16, 48, 128)
+├── tests/               # Node test suite
+└── icons/               # Extension and store icons
 ```
 
-## What's new in v1.1
+## What's new in v1.1.2
 
 - [x] OPML import/export
 - [x] English UI with German translation (i18n)
 - [x] Dark mode (automatic via `prefers-color-scheme`)
-- [ ] Folder export as `.url` files (planned for future release)
-- [x] Feed autodiscovery (`<link rel="alternate">`)
+- [ ] Folder export UI for `.url` files (core helper and tests present; options-page button pending)
+- [x] Feed autodiscovery (`<link rel="alternate">`, visible feed links, and common feed paths after a user click)
 - [x] Per-feed error display (no more silent failures)
 - [x] Configurable bookmark folder name
 - [x] Bookmark folder survives rename/move (tracked by ID)
@@ -104,6 +121,8 @@ RSS-BOOK/
 
 Deine Feeds leben in deinen Lesezeichen — überall verfügbar wo dein Browser synchronisiert, ohne separate App.
 
+Über *Discover feeds* sucht RSS-BOOK auf der aktuellen Seite nach RSS-/Atom-Links und prüft nach deinem Klick typische Feed-Pfade derselben Website.
+
 ### Installation
 
 1. Repository herunterladen oder klonen
@@ -119,7 +138,7 @@ Deine Feeds leben in deinen Lesezeichen — überall verfügbar wo dein Browser 
 
 ## Haftung / Liability
 
-Dieses Projekt ist eine **unentgeltliche Open-Source-Schenkung** im Sinne der §§ 516 ff. BGB. Die Haftung des Urhebers ist gemäß **§ 521 BGB** auf **Vorsatz und grobe Fahrlässigkeit** beschränkt. Ergänzend gelten die Haftungsausschlüsse aus GPL-3.0 / MIT / Apache-2.0 §§ 15–16 (je nach gewählter Lizenz).
+Dieses Projekt ist eine **unentgeltliche Open-Source-Schenkung** im Sinne der §§ 516 ff. BGB. Die Haftung des Urhebers ist gemäß **§ 521 BGB** auf **Vorsatz und grobe Fahrlässigkeit** beschränkt. Ergänzend gilt der Haftungsausschluss der MIT-Lizenz.
 
 Nutzung auf eigenes Risiko. Keine Wartungszusage, keine Verfügbarkeitsgarantie, keine Gewähr für Fehlerfreiheit oder Eignung für einen bestimmten Zweck.
 

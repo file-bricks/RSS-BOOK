@@ -185,17 +185,81 @@ async function discoverFeedsOnTab(tabId) {
   const results = await chrome.scripting.executeScript({
     target: { tabId },
     func: () => {
-      const links = document.querySelectorAll(
-        'link[rel="alternate"][type="application/rss+xml"], ' +
-        'link[rel="alternate"][type="application/atom+xml"], ' +
-        'link[rel="alternate"][type="text/xml"], ' +
-        'link[rel="alternate"][type="application/xml"]'
-      );
-      return [...links].map(l => ({
-        url: l.href,
-        title: l.title || ""
-      }));
+      const found = [];
+      const seen = new Set();
+      const add = (url, title) => {
+        if (!url) return;
+        try {
+          const abs = new URL(url, location.href).href;
+          if (seen.has(abs)) return;
+          seen.add(abs);
+          found.push({ url: abs, title: title || "" });
+        } catch {}
+      };
+
+      // 1) <link rel="alternate"> with feed mime types
+      for (const l of document.querySelectorAll('link[rel="alternate"]')) {
+        const type = (l.getAttribute("type") || "").toLowerCase();
+        if (
+          type.includes("rss") ||
+          type.includes("atom") ||
+          type === "application/xml" ||
+          type === "text/xml"
+        ) {
+          add(l.href, l.title);
+        }
+      }
+
+      // 2) Visible <a> links that look like feeds
+      const feedRe = /(^|\/)(feed|rss|atom|feeds|feed\.xml|rss\.xml|atom\.xml|index\.xml)(\/|\.xml|$|\?)/i;
+      for (const a of document.querySelectorAll('a[href]')) {
+        const href = a.getAttribute("href") || "";
+        const txt = (a.textContent || "").trim().toLowerCase();
+        if (feedRe.test(href) || /^(rss|atom|feed)$/i.test(txt)) {
+          add(a.href, a.title || a.textContent?.trim() || "");
+        }
+      }
+
+      return { feeds: found, pageUrl: location.href };
     }
   });
-  return results?.[0]?.result || [];
+
+  const scriptResult = results?.[0]?.result || { feeds: [], pageUrl: "" };
+  const feeds = scriptResult.feeds;
+  const seen = new Set(feeds.map(f => f.url));
+
+  // 3) Probe common feed paths on the page origin
+  if (scriptResult.pageUrl) {
+    try {
+      const origin = new URL(scriptResult.pageUrl).origin;
+      const candidates = [
+        "/feed", "/feed/", "/rss", "/rss/", "/atom.xml",
+        "/feed.xml", "/rss.xml", "/index.xml", "/feeds/posts/default"
+      ];
+      const probes = await Promise.all(candidates.map(async (p) => {
+        const url = origin + p;
+        if (seen.has(url)) return null;
+        try {
+          const res = await fetch(url, { method: "GET", redirect: "follow" });
+          if (!res.ok) return null;
+          const ct = (res.headers.get("Content-Type") || "").toLowerCase();
+          const text = (await res.text()).slice(0, 2048);
+          const looksFeed =
+            ct.includes("xml") || ct.includes("rss") || ct.includes("atom") ||
+            /<rss[\s>]/i.test(text) || /<feed[\s>]/i.test(text) || /<rdf:RDF[\s>]/i.test(text);
+          return looksFeed ? { url: res.url || url, title: "" } : null;
+        } catch {
+          return null;
+        }
+      }));
+      for (const p of probes) {
+        if (p && !seen.has(p.url)) {
+          seen.add(p.url);
+          feeds.push(p);
+        }
+      }
+    } catch {}
+  }
+
+  return feeds;
 }

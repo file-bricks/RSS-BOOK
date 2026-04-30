@@ -1,14 +1,15 @@
 # Privacy Policy — RSS-BOOK
 
-**Last updated:** 2026-04-07
+**Last updated:** 2026-04-30
 
 ## Summary
 
-RSS-BOOK does **not** collect, transmit, or store any personal data. Everything stays in your browser.
+RSS-BOOK does **not** collect personal data or send it to the developer. Settings and bookmark data stay in your browser; network requests are limited to the feed-related actions described below.
 
 ## What data does RSS-BOOK access?
 
 - **Feed URLs you configure:** RSS-BOOK fetches RSS/Atom feeds from the URLs you add. These requests go directly from your browser to the feed servers — no intermediary, no proxy, no third-party service.
+- **Current tab on explicit discovery:** When you click "Discover feeds", RSS-BOOK scans the current tab for RSS/Atom links and may probe common feed paths on that site's origin. This action is user-triggered.
 - **Bookmarks:** RSS-BOOK creates and manages bookmark folders and entries in your browser's bookmark system. All bookmark data stays local.
 - **Extension storage:** Your feed list, settings, and cache metadata (ETags, timestamps) are stored in `chrome.storage.local` — local to your browser, never synced or transmitted.
 
@@ -23,11 +24,16 @@ RSS-BOOK does **not** collect, transmit, or store any personal data. Everything 
 
 ## Network requests
 
-RSS-BOOK makes HTTP requests **only** to the feed URLs you explicitly configure. No other network requests are made. No data is sent to the developer or any third party.
+RSS-BOOK makes HTTP requests to:
+
+- RSS/Atom feed URLs you explicitly configure
+- common feed paths on the current site's origin when you click "Discover feeds"
+
+No data is sent to the developer or any third party. There is no telemetry, analytics, advertising, or proxy service.
 
 ## Host permissions (`<all_urls>`)
 
-RSS-BOOK requests the `<all_urls>` host permission because RSS/Atom feeds can be hosted on any domain. This permission is used exclusively for fetching feed content — nothing else.
+RSS-BOOK requests the `<all_urls>` host permission because RSS/Atom feeds can be hosted on any domain. This permission is used for fetching configured feed content and for user-triggered feed discovery on the current site's origin.
 
 ## Data storage
 

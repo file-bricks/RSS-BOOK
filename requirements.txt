@@ -1,0 +1,2 @@
+# This repository ships as a browser extension.
+# No Python runtime dependencies are required for normal use.

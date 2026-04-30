@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.2] — 2026-04-30
+
+### Added
+- Expanded feed discovery to include visible feed links and common feed paths on the current site's origin.
+- Added README screenshot reference and extension helper files for easier local installation.
+- Added a dependency-free Node test suite for RSS/Atom parsing, OPML import/export, storage handling, folder export, and store asset checks.
+- Added automated bookmark tests for root-folder recovery, dedupe/LRU behavior, and retention cleanup.
+
+### Changed
+- Updated README permissions and privacy wording to match the activeTab/scripting discovery flow.
+- Updated privacy policy, security policy, contributing guide, code of conduct, and `.gitignore` for public repository hygiene.
+- Clarified that folder export has tested core helpers while the options-page UI is still pending.
+- Bumped extension manifest version to 1.1.2.
+
+### Verified
+- Store icon (`icons/300.png`) and Store/README screenshots are checked for release-ready PNG dimensions.
+
 ## [1.1.1] — 2026-04-08
 
 ### Fixed

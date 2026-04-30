@@ -1,6 +1,16 @@
 # Interne Dateien
 AUFGABEN.txt
+TEST.txt
+TESTS.txt
+TESTERGEBNISSE.txt
 RELEASE_PLAN.md
+.env
+.env.*
+*.pem
+*.key
+client_secret*.json
+credentials.json
+token.json
 
 # OS
 Thumbs.db
@@ -10,7 +20,12 @@ desktop.ini
 # IDE
 .vscode/
 .idea/
+.claude/
 
 # Packages
 node_modules/
 *.zip
+*.crx
+dist/
+build/
+web-ext-artifacts/

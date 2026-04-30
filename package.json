@@ -1,0 +1,11 @@
+{
+  "name": "rss-book",
+  "version": "1.1.2",
+  "private": true,
+  "type": "module",
+  "description": "Manifest V3 RSS/Atom to bookmarks browser extension.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "devDependencies": {}
+}
