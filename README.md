@@ -59,7 +59,7 @@ Store listing is planned after the remaining browser and screenshot checks.
 
 ## Development
 
-RSS-BOOK has no build step. The repository includes 25 dependency-free Node tests for parser behavior, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, and light/dark theme CSS coverage:
+RSS-BOOK has no build step. The repository includes 26 dependency-free Node tests for parser behavior, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, and light/dark theme CSS coverage:
 
 ```bash
 npm test

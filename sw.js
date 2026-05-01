@@ -71,13 +71,11 @@ async function ensureAlarm() {
 
 async function runUpdateCycle(reason) {
   console.log(`[RSS-BOOK] Update cycle (${reason})`);
+  const { settings } = await getState();
   const feeds = await getEnabledFeeds();
 
   for (const feed of feeds) {
-    if (reason === "alarm" && feed.intervalMinutes > 0) {
-      const due = !feed.lastFetch || (Date.now() - feed.lastFetch) >= feed.intervalMinutes * 60_000;
-      if (!due) continue;
-    }
+    if (!shouldUpdateFeedForReason(feed, reason, settings)) continue;
     try {
       await updateOneFeed(feed.id);
     } catch (err) {
@@ -95,6 +93,18 @@ async function runUpdateCycle(reason) {
       console.error(`[RSS-BOOK] Error pruning feed ${feed.url}:`, err);
     }
   }
+}
+
+export function shouldUpdateFeedForReason(feed, reason, settings = {}, now = Date.now()) {
+  if (reason !== "alarm") return true;
+
+  const feedInterval = Number(feed.intervalMinutes) || 0;
+  if (feedInterval > 0) {
+    return !feed.lastFetch || (now - feed.lastFetch) >= feedInterval * 60_000;
+  }
+
+  const globalInterval = Number(settings?.globalIntervalMinutes) || 0;
+  return globalInterval > 0;
 }
 
 async function updateOneFeed(feedId) {
