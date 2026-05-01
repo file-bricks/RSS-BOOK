@@ -3,6 +3,7 @@
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
+![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
 
 ## Screenshot
 
@@ -58,11 +59,13 @@ Store listing is planned after the remaining browser and screenshot checks.
 
 ## Development
 
-RSS-BOOK has no build step. The repository includes dependency-free Node tests:
+RSS-BOOK has no build step. The repository includes 25 dependency-free Node tests for parser behavior, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, and light/dark theme CSS coverage:
 
 ```bash
-node --test tests/*.test.mjs
+npm test
 ```
+
+GitHub Actions runs the same suite on pushes to `main` and pull requests.
 
 ## Permissions
 

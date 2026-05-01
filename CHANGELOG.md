@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- Added automated light/dark theme coverage for popup and options CSS variables.
+- Added a read-only GitHub Actions CI workflow for the Node test suite.
+
+### Verified
+- `npm test` now covers 25 dependency-free Node tests, including theme coverage.
+
 ## [1.1.2] — 2026-04-30
 
 ### Added
