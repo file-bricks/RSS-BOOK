@@ -59,11 +59,19 @@ Store listing is planned after the remaining browser and screenshot checks.
 
 ## Development
 
-RSS-BOOK has no build step. The repository includes 26 dependency-free Node tests for parser behavior, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, and light/dark theme CSS coverage:
+RSS-BOOK has no bundling step. The repository includes 28 dependency-free Node tests for parser behavior, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, light/dark theme CSS coverage, and Edge package contents:
 
 ```bash
 npm test
 ```
+
+Create the Edge upload ZIP with:
+
+```bash
+npm run package
+```
+
+The package is written to `dist/RSS-BOOK-v<manifest version>-edge.zip`.
 
 GitHub Actions runs the same suite on pushes to `main` and pull requests.
 
@@ -94,6 +102,7 @@ RSS-BOOK/
 ├── ui/
 │   ├── popup.html/js    # Extension popup
 │   └── options.html/js  # Settings page
+├── scripts/             # Release packaging helpers
 ├── tests/               # Node test suite
 └── icons/               # Extension and store icons
 ```

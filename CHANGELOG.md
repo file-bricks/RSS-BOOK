@@ -6,12 +6,14 @@
 - Added automated light/dark theme coverage for popup and options CSS variables.
 - Added a read-only GitHub Actions CI workflow for the Node test suite.
 - Added regression coverage for service-worker alarm scheduling.
+- Added a dependency-free Edge upload ZIP packager via `npm run package`.
 
 ### Fixed
 - Fixed alarm updates for manual-only feeds when global interval is disabled but other feeds define per-feed intervals.
 
 ### Verified
-- `npm test` now covers 26 dependency-free Node tests, including theme and service-worker scheduling coverage.
+- `npm test` now covers 28 dependency-free Node tests, including theme, service-worker scheduling, and package-content coverage.
+- `npm run package` creates `dist/RSS-BOOK-v1.1.2-edge.zip` with the Manifest V3 runtime files plus license/privacy docs.
 
 ## [1.1.2] — 2026-04-30
 
