@@ -40,9 +40,9 @@ Your feeds live in your bookmarks — accessible everywhere your browser syncs, 
 3. Enable **Developer mode**
 4. Click **Load unpacked** → select the `RSS-BOOK` folder
 
-### Edge Add-ons (coming soon)
+### Edge Add-ons package
 
-Store listing is planned after the remaining browser and screenshot checks.
+Create the upload-ready ZIP with `npm run package`. The generated archive stays local under `dist/` and is intentionally ignored by git.
 
 ## Usage
 
@@ -74,6 +74,11 @@ npm run package
 The package is written to `dist/RSS-BOOK-v<manifest version>-edge.zip`.
 
 GitHub Actions runs the same suite on pushes to `main` and pull requests.
+
+## Localization
+
+The default UI is English and the bundled German locale lives in `_locales/de/messages.json`.
+German user-facing strings use real Umlaute such as ä, ö, ü, and ß so browser-store text and extension UI stay readable without JSON escape noise.
 
 ## Permissions
 

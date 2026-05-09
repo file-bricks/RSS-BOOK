@@ -30,6 +30,7 @@ yarn-error.log*
 coverage/
 .nyc_output/
 .cache/
+.pytest_cache/
 *.log
 *.bak
 *.zip

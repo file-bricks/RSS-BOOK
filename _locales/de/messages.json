@@ -3,7 +3,7 @@
     "message": "RSS-BOOK"
   },
   "extDescription": {
-    "message": "Leichtgewichtiger RSS/Atom-Reader der Feed-Eintr\u00e4ge als Lesezeichen speichert. Kein Account, keine Cloud, kein Tracking."
+    "message": "Leichtgewichtiger RSS/Atom-Reader der Feed-Einträge als Lesezeichen speichert. Kein Account, keine Cloud, kein Tracking."
   },
   "popupUpdateAll": {
     "message": "Jetzt aktualisieren"
@@ -60,7 +60,7 @@
     "message": "Keine Feeds auf dieser Seite gefunden"
   },
   "popupFeedAdded": {
-    "message": "Feed hinzugef\u00fcgt!"
+    "message": "Feed hinzugefügt!"
   },
   "optionsTitle": {
     "message": "Einstellungen"
@@ -81,10 +81,10 @@
     "message": "Gespeichert!"
   },
   "optionsAddFeed": {
-    "message": "Neuen Feed hinzuf\u00fcgen"
+    "message": "Neuen Feed hinzufügen"
   },
   "optionsAdd": {
-    "message": "Hinzuf\u00fcgen"
+    "message": "Hinzufügen"
   },
   "optionsFeeds": {
     "message": "Feeds"
@@ -167,6 +167,6 @@
     }
   },
   "notifyEntriesAvailable": {
-    "message": "Neue Eintr\u00e4ge verf\u00fcgbar"
+    "message": "Neue Einträge verfügbar"
   }
 }

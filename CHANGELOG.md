@@ -10,6 +10,10 @@
 
 ### Fixed
 - Fixed alarm updates for manual-only feeds when global interval is disabled but other feeds define per-feed intervals.
+- Normalized the German locale file to real UTF-8 Umlaute instead of escaped code points.
+
+### Changed
+- Added repository line-ending rules, explicitly ignored local pytest caches, and updated the README Edge packaging note.
 
 ### Verified
 - `npm test` now covers 28 dependency-free Node tests, including theme, service-worker scheduling, and package-content coverage.
