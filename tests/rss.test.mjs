@@ -63,6 +63,60 @@ test("parses RSS 2.0 feeds and sends cache validators", async () => {
   ]);
 });
 
+test("strips CDATA wrappers from RSS and Atom text content", async () => {
+  globalThis.fetch = async () => new Response(
+    `<?xml version="1.0"?>
+    <rss version="2.0">
+      <channel>
+        <title><![CDATA[Example & News]]></title>
+        <item>
+          <title><![CDATA[First <Post>]]></title>
+          <link><![CDATA[https://example.test/first]]></link>
+          <guid>item-1</guid>
+        </item>
+      </channel>
+    </rss>`,
+    { status: 200 }
+  );
+
+  const rssParsed = await fetchFeedAndParse("https://example.test/feed.xml");
+
+  assert.equal(rssParsed.title, "Example & News");
+  assert.deepEqual(rssParsed.items, [
+    {
+      title: "First <Post>",
+      link: "https://example.test/first",
+      guid: "item-1",
+      published: ""
+    }
+  ]);
+
+  globalThis.fetch = async () => new Response(
+    `<feed xmlns="http://www.w3.org/2005/Atom">
+      <title><![CDATA[Atom Feed]]></title>
+      <entry>
+        <title><![CDATA[Atom & One]]></title>
+        <id>urn:post:1</id>
+        <updated><![CDATA[2026-04-30T10:00:00Z]]></updated>
+        <link href="https://example.test/one" rel="alternate" />
+      </entry>
+    </feed>`,
+    { status: 200 }
+  );
+
+  const atomParsed = await fetchFeedAndParse("https://example.test/atom.xml");
+
+  assert.equal(atomParsed.title, "Atom Feed");
+  assert.deepEqual(atomParsed.items, [
+    {
+      title: "Atom & One",
+      link: "https://example.test/one",
+      guid: "urn:post:1",
+      published: "2026-04-30T10:00:00Z"
+    }
+  ]);
+});
+
 test("parses Atom entries and prefers rel alternate links regardless of attribute order", async () => {
   globalThis.fetch = async () => new Response(
     `<feed xmlns="http://www.w3.org/2005/Atom">

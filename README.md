@@ -24,6 +24,7 @@ Your feeds live in your bookmarks — accessible everywhere your browser syncs, 
 
 - **Manifest V3 native** — built for modern Chromium browsers
 - **RSS 2.0 + Atom** — both formats supported
+- **CDATA-safe parsing** — titles, links, and Atom dates are cleaned before bookmark creation
 - **ETag/304 caching** — bandwidth-efficient, respects server cache headers
 - **Per-feed intervals** — each feed can have its own update schedule
 - **Retention** — auto-remove bookmarks older than N days
@@ -59,7 +60,7 @@ Create the upload-ready ZIP with `npm run package`. The generated archive stays 
 
 ## Development
 
-RSS-BOOK has no bundling step. The repository includes 28 dependency-free Node tests for parser behavior, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, light/dark theme CSS coverage, and Edge package contents:
+RSS-BOOK has no bundling step. The repository includes 29 dependency-free Node tests for parser behavior, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, light/dark theme CSS coverage, and Edge package contents:
 
 ```bash
 npm test

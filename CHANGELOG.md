@@ -10,13 +10,14 @@
 
 ### Fixed
 - Fixed alarm updates for manual-only feeds when global interval is disabled but other feeds define per-feed intervals.
+- Fixed RSS and Atom text parsing so CDATA wrappers are removed from feed titles, item titles, links, and Atom dates.
 - Normalized the German locale file to real UTF-8 Umlaute instead of escaped code points.
 
 ### Changed
 - Added repository line-ending rules, explicitly ignored local pytest caches, and updated the README Edge packaging note.
 
 ### Verified
-- `npm test` now covers 28 dependency-free Node tests, including theme, service-worker scheduling, and package-content coverage.
+- `npm test` now covers 29 dependency-free Node tests, including CDATA cleanup, theme, service-worker scheduling, and package-content coverage.
 - `npm run package` creates `dist/RSS-BOOK-v1.1.2-edge.zip` with the Manifest V3 runtime files plus license/privacy docs.
 
 ## [1.1.2] — 2026-04-30
