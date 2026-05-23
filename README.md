@@ -1,3 +1,10 @@
+# RSS-BOOK
+
+RSS-BOOK is a privacy-first RSS and Atom feed reader for Chromium browsers.
+Instead of creating another account or cloud database, it saves feed entries as
+browser bookmarks so Chrome, Edge, Brave and Vivaldi sync can carry them across
+devices.
+
 ![RSS-BOOK](assets/social-preview.png)
 
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
@@ -60,7 +67,7 @@ Create the upload-ready ZIP with `npm run package`. The generated archive stays 
 
 ## Development
 
-RSS-BOOK has no bundling step. The repository includes 29 dependency-free Node tests for parser behavior, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, light/dark theme CSS coverage, and Edge package contents:
+RSS-BOOK has no bundling step. The repository includes 30 dependency-free Node tests for parser behavior, a 10-fixture RSS/Atom feed matrix, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, light/dark theme CSS coverage, and Edge package contents:
 
 ```bash
 npm test
