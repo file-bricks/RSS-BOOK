@@ -80,6 +80,57 @@
   "optionsSaved": {
     "message": "Saved!"
   },
+  "optionsLifecycle": {
+    "message": "Service worker status"
+  },
+  "optionsLifecycleEmpty": {
+    "message": "No lifecycle data yet. Reopen the browser or trigger a feed update."
+  },
+  "optionsLifecycleRefresh": {
+    "message": "Refresh status"
+  },
+  "optionsLifecycleBoot": {
+    "message": "Last worker boot: "
+  },
+  "optionsLifecycleAlarm": {
+    "message": "Alarm interval: "
+  },
+  "optionsLifecycleEnabledFeeds": {
+    "message": "Enabled feeds: "
+  },
+  "optionsLifecycleLastCycle": {
+    "message": "Last update cycle: "
+  },
+  "optionsLifecycleLastReason": {
+    "message": "Last cycle reason: "
+  },
+  "optionsLifecycleProcessedFeeds": {
+    "message": "Feeds processed: "
+  },
+  "optionsLifecyclePrunedFeeds": {
+    "message": "Feeds pruned: "
+  },
+  "optionsLifecycleNever": {
+    "message": "Never"
+  },
+  "optionsLifecycleDisabled": {
+    "message": "Disabled"
+  },
+  "optionsLifecycleAlarmSourceGlobal": {
+    "message": "Global interval"
+  },
+  "optionsLifecycleAlarmSourceFeed": {
+    "message": "Shortest feed interval"
+  },
+  "optionsLifecycleReasonAlarm": {
+    "message": "Scheduled alarm"
+  },
+  "optionsLifecycleReasonStartup": {
+    "message": "Browser startup"
+  },
+  "optionsLifecycleReasonManual": {
+    "message": "Manual update"
+  },
   "optionsAddFeed": {
     "message": "Add new feed"
   },

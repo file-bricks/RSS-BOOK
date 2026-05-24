@@ -80,6 +80,57 @@
   "optionsSaved": {
     "message": "Gespeichert!"
   },
+  "optionsLifecycle": {
+    "message": "Service-Worker-Status"
+  },
+  "optionsLifecycleEmpty": {
+    "message": "Noch keine Lifecycle-Daten. Browser neu öffnen oder Feed-Aktualisierung auslösen."
+  },
+  "optionsLifecycleRefresh": {
+    "message": "Status aktualisieren"
+  },
+  "optionsLifecycleBoot": {
+    "message": "Letzter Worker-Start: "
+  },
+  "optionsLifecycleAlarm": {
+    "message": "Alarmintervall: "
+  },
+  "optionsLifecycleEnabledFeeds": {
+    "message": "Aktive Feeds: "
+  },
+  "optionsLifecycleLastCycle": {
+    "message": "Letzter Aktualisierungslauf: "
+  },
+  "optionsLifecycleLastReason": {
+    "message": "Letzter Laufgrund: "
+  },
+  "optionsLifecycleProcessedFeeds": {
+    "message": "Verarbeitete Feeds: "
+  },
+  "optionsLifecyclePrunedFeeds": {
+    "message": "Bereinigte Feeds: "
+  },
+  "optionsLifecycleNever": {
+    "message": "Nie"
+  },
+  "optionsLifecycleDisabled": {
+    "message": "Deaktiviert"
+  },
+  "optionsLifecycleAlarmSourceGlobal": {
+    "message": "Globales Intervall"
+  },
+  "optionsLifecycleAlarmSourceFeed": {
+    "message": "Kürzestes Feed-Intervall"
+  },
+  "optionsLifecycleReasonAlarm": {
+    "message": "Geplanter Alarm"
+  },
+  "optionsLifecycleReasonStartup": {
+    "message": "Browserstart"
+  },
+  "optionsLifecycleReasonManual": {
+    "message": "Manuelle Aktualisierung"
+  },
   "optionsAddFeed": {
     "message": "Neuen Feed hinzufügen"
   },

@@ -1,4 +1,4 @@
-import { getState, upsertFeed, removeFeed, updateSettings, getAllFeeds } from "../lib/storage.js";
+import { getAllFeeds, getLifecycle, getState, removeFeed, updateSettings, upsertFeed } from "../lib/storage.js";
 import { generateOPML, parseOPML } from "../lib/opml.js";
 import { exportAllFeedsToFolder } from "../lib/export.js";
 import { t, applyI18n } from "../lib/i18n.js";
@@ -22,6 +22,32 @@ document.getElementById("saveSettings").addEventListener("click", async () => {
   });
   showStatus("settingsStatus", t("optionsSaved"));
 });
+
+// --- Lifecycle Diagnostics ---
+
+document.getElementById("refreshLifecycleBtn").addEventListener("click", async () => {
+  await loadLifecycle();
+});
+
+async function loadLifecycle() {
+  const lifecycle = await getLifecycle();
+  const target = document.getElementById("lifecycleInfo");
+
+  if (!lifecycle.workerBootedAt && !lifecycle.lastAlarmCheckAt && !lifecycle.lastCycleAt) {
+    target.textContent = t("optionsLifecycleEmpty");
+    return;
+  }
+
+  target.textContent = [
+    `${t("optionsLifecycleBoot")}${formatTimestamp(lifecycle.workerBootedAt)}`,
+    `${t("optionsLifecycleAlarm")}${formatAlarm(lifecycle)}`,
+    `${t("optionsLifecycleEnabledFeeds")}${lifecycle.enabledFeedCount || 0}`,
+    `${t("optionsLifecycleLastCycle")}${formatTimestamp(lifecycle.lastCycleAt)}`,
+    `${t("optionsLifecycleLastReason")}${describeCycleReason(lifecycle.lastCycleReason)}`,
+    `${t("optionsLifecycleProcessedFeeds")}${lifecycle.lastCycleFeedCount || 0}`,
+    `${t("optionsLifecyclePrunedFeeds")}${lifecycle.lastPruneFeedCount || 0}`
+  ].join("\n");
+}
 
 // --- Add Feed ---
 
@@ -228,8 +254,38 @@ function showStatus(elementId, text, isError) {
   setTimeout(() => { el.textContent = ""; el.className = "status"; }, 3000);
 }
 
+function formatTimestamp(value) {
+  if (!value) return t("optionsLifecycleNever");
+  try {
+    return new Date(value).toISOString();
+  } catch {
+    return t("optionsLifecycleNever");
+  }
+}
+
+function formatAlarm(lifecycle) {
+  const interval = Number(lifecycle.alarmIntervalMinutes) || 0;
+  if (interval <= 0) return t("optionsLifecycleDisabled");
+  return `${interval} min (${describeAlarmSource(lifecycle.alarmSource)})`;
+}
+
+function describeAlarmSource(source) {
+  if (source === "global") return t("optionsLifecycleAlarmSourceGlobal");
+  if (source === "feed") return t("optionsLifecycleAlarmSourceFeed");
+  return t("optionsLifecycleDisabled");
+}
+
+function describeCycleReason(reason) {
+  if (reason === "alarm") return t("optionsLifecycleReasonAlarm");
+  if (reason === "startup") return t("optionsLifecycleReasonStartup");
+  if (reason === "manual") return t("optionsLifecycleReasonManual");
+  if (!reason) return t("optionsLifecycleNever");
+  return reason;
+}
+
 // --- Init ---
 
 applyI18n();
 loadSettings();
+loadLifecycle();
 renderFeeds();

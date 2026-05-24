@@ -7,6 +7,8 @@ afterEach(() => {
 
 function installChromeMock() {
   const addListener = () => {};
+  const setCalls = [];
+  const alarmCreates = [];
 
   globalThis.chrome = {
     runtime: {
@@ -20,24 +22,44 @@ function installChromeMock() {
         return null;
       },
       async clear() {},
-      async create() {}
+      async create(name, info) {
+        alarmCreates.push({ name, info });
+      }
     },
     storage: {
       onChanged: { addListener },
       local: {
         async get() {
-          return { settings: {}, feeds: {} };
+          return { settings: {}, feeds: {}, lifecycle: {} };
         },
-        async set() {}
+        async set(patch) {
+          setCalls.push(patch);
+        }
       }
     }
   };
+
+  return { setCalls, alarmCreates };
 }
 
 test("alarm scheduling skips manual-only feeds when global interval is disabled", async () => {
   installChromeMock();
-  const { shouldUpdateFeedForReason } = await import(`../sw.js?sw-schedule=${Date.now()}`);
+  const { bootPromise, computeAlarmPlan, shouldUpdateFeedForReason } = await import(`../sw.js?sw-schedule=${Date.now()}`);
   const now = Date.parse("2026-05-01T12:00:00Z");
+
+  await bootPromise;
+
+  assert.deepEqual(
+    computeAlarmPlan(
+      { globalIntervalMinutes: 0 },
+      [{ intervalMinutes: 45 }, { intervalMinutes: 15 }, { intervalMinutes: 0 }]
+    ),
+    {
+      intervalMinutes: 15,
+      alarmSource: "feed",
+      enabledFeedCount: 3
+    }
+  );
 
   assert.equal(
     shouldUpdateFeedForReason(
@@ -83,5 +105,18 @@ test("alarm scheduling skips manual-only feeds when global interval is disabled"
       now
     ),
     true
+  );
+});
+
+test("service worker boot records lifecycle info and recreates alarms", async () => {
+  const { setCalls, alarmCreates } = installChromeMock();
+  const { bootPromise } = await import(`../sw.js?sw-boot=${Date.now()}`);
+
+  await bootPromise;
+
+  assert.equal(alarmCreates.length, 0);
+  assert.ok(
+    setCalls.some((call) => Object.prototype.hasOwnProperty.call(call, "lifecycle")),
+    "expected lifecycle storage writes during boot"
   );
 });

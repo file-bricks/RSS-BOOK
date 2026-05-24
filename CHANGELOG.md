@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- Added options-page lifecycle diagnostics for service-worker boot, alarm cadence, and recent update-cycle activity.
 - Added automated light/dark theme coverage for popup and options CSS variables.
 - Added a read-only GitHub Actions CI workflow for the Node test suite.
 - Added regression coverage for service-worker alarm scheduling.
@@ -10,6 +11,7 @@
 - Added a 10-fixture RSS/Atom parser matrix covering WordPress-style RSS, podcast RSS, FeedBurner-style RSS, Media RSS, RSS 1.0/RDF, and common Atom feed variants.
 
 ### Fixed
+- Booting the service worker now refreshes stored alarm diagnostics even before `onStartup` or manual settings changes run.
 - Fixed alarm updates for manual-only feeds when global interval is disabled but other feeds define per-feed intervals.
 - Fixed RSS and Atom text parsing so CDATA wrappers are removed from feed titles, item titles, links, and Atom dates.
 - Fixed RSS 1.0/RDF parsing so item blocks outside the channel block are no longer ignored.
@@ -19,7 +21,7 @@
 - Added repository line-ending rules, explicitly ignored local pytest caches, and updated the README Edge packaging note.
 
 ### Verified
-- `npm test` now covers 30 dependency-free Node tests, including the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, and package-content coverage.
+- `npm test` now covers 33 dependency-free Node tests, including the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, and package-content coverage.
 - `npm run package` creates `dist/RSS-BOOK-v1.1.2-edge.zip` with the Manifest V3 runtime files plus license/privacy docs.
 
 ## [1.1.2] — 2026-04-30

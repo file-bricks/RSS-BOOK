@@ -3,8 +3,10 @@ import assert from "node:assert/strict";
 
 import {
   getEnabledFeeds,
+  getLifecycle,
   getState,
   removeFeed,
+  updateLifecycle,
   updateSettings,
   upsertFeed
 } from "../lib/storage.js";
@@ -86,5 +88,30 @@ test("updateSettings preserves unchanged settings", async () => {
     updateOnStartup: true,
     rootFolderId: "",
     deleteBookmarksOnUnsubscribe: false
+  });
+});
+
+test("getLifecycle and updateLifecycle merge lifecycle defaults", async () => {
+  const store = installStorage({
+    lifecycle: { alarmIntervalMinutes: 10, lastCycleReason: "manual" }
+  });
+
+  const lifecycle = await getLifecycle();
+  assert.equal(lifecycle.alarmIntervalMinutes, 10);
+  assert.equal(lifecycle.lastCycleReason, "manual");
+  assert.equal(lifecycle.enabledFeedCount, 0);
+
+  await updateLifecycle({ enabledFeedCount: 3 });
+
+  assert.deepEqual(store.lifecycle, {
+    workerBootedAt: 0,
+    lastAlarmCheckAt: 0,
+    alarmIntervalMinutes: 10,
+    alarmSource: "disabled",
+    enabledFeedCount: 3,
+    lastCycleAt: 0,
+    lastCycleReason: "manual",
+    lastCycleFeedCount: 0,
+    lastPruneFeedCount: 0
   });
 });

@@ -1,4 +1,4 @@
-import { getState, upsertFeed, getEnabledFeeds } from "./lib/storage.js";
+import { getState, getEnabledFeeds, updateLifecycle, upsertFeed } from "./lib/storage.js";
 import { fetchFeedAndParse } from "./lib/rss.js";
 import { ensureFeedFolder, addItemsToBookmarks, pruneOldBookmarks } from "./lib/bookmarks.js";
 import { collectFeedLinksFromDocument, probeCommonFeedPaths } from "./lib/discovery.js";
@@ -6,6 +6,10 @@ import { collectFeedLinksFromDocument, probeCommonFeedPaths } from "./lib/discov
 const ALARM_NAME = "rss-book-tick";
 
 // --- Lifecycle ---
+
+const bootPromise = initializeServiceWorkerLifecycle().catch((err) => {
+  console.error("[RSS-BOOK] Service worker bootstrap failed:", err);
+});
 
 chrome.runtime.onInstalled.addListener(async () => {
   const raw = await chrome.storage.local.get(["settings", "feeds"]);
@@ -40,30 +44,55 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
   if (changes.settings || changes.feeds) await ensureAlarm();
 });
 
-async function ensureAlarm() {
-  const { settings } = await getState();
-  let interval = settings?.globalIntervalMinutes ?? 0;
+async function initializeServiceWorkerLifecycle() {
+  if (typeof chrome === "undefined" || !chrome?.storage?.local || !chrome?.alarms) return;
+  await updateLifecycle({ workerBootedAt: Date.now() });
+  await ensureAlarm();
+}
 
-  // If no global interval, use smallest per-feed interval as fallback
-  if (interval <= 0) {
-    const feeds = await getEnabledFeeds();
-    const feedIntervals = feeds.map(f => f.intervalMinutes).filter(m => m > 0);
+export function computeAlarmPlan(settings = {}, feeds = []) {
+  let intervalMinutes = Number(settings?.globalIntervalMinutes) || 0;
+  let alarmSource = intervalMinutes > 0 ? "global" : "disabled";
+
+  if (intervalMinutes <= 0) {
+    const feedIntervals = feeds
+      .map((feed) => Number(feed.intervalMinutes) || 0)
+      .filter((minutes) => minutes > 0);
     if (feedIntervals.length > 0) {
-      interval = Math.min(...feedIntervals);
+      intervalMinutes = Math.min(...feedIntervals);
+      alarmSource = "feed";
     }
   }
 
+  return {
+    intervalMinutes,
+    alarmSource,
+    enabledFeedCount: feeds.length
+  };
+}
+
+async function ensureAlarm() {
+  const { settings } = await getState();
+  const feeds = await getEnabledFeeds();
+  const plan = computeAlarmPlan(settings, feeds);
   const existing = await chrome.alarms.get(ALARM_NAME);
 
-  if (interval <= 0) {
+  await updateLifecycle({
+    lastAlarmCheckAt: Date.now(),
+    alarmIntervalMinutes: plan.intervalMinutes,
+    alarmSource: plan.alarmSource,
+    enabledFeedCount: plan.enabledFeedCount
+  });
+
+  if (plan.intervalMinutes <= 0) {
     if (existing) await chrome.alarms.clear(ALARM_NAME);
     return;
   }
 
-  if (!existing || Math.abs((existing.periodInMinutes || 0) - interval) > 0.01) {
+  if (!existing || Math.abs((existing.periodInMinutes || 0) - plan.intervalMinutes) > 0.01) {
     await chrome.alarms.clear(ALARM_NAME);
-    await chrome.alarms.create(ALARM_NAME, { periodInMinutes: interval });
-    console.log(`[RSS-BOOK] Alarm set: every ${interval} min`);
+    await chrome.alarms.create(ALARM_NAME, { periodInMinutes: plan.intervalMinutes });
+    console.log(`[RSS-BOOK] Alarm set: every ${plan.intervalMinutes} min`);
   }
 }
 
@@ -73,9 +102,11 @@ async function runUpdateCycle(reason) {
   console.log(`[RSS-BOOK] Update cycle (${reason})`);
   const { settings } = await getState();
   const feeds = await getEnabledFeeds();
+  let updatedFeeds = 0;
 
   for (const feed of feeds) {
     if (!shouldUpdateFeedForReason(feed, reason, settings)) continue;
+    updatedFeeds += 1;
     try {
       await updateOneFeed(feed.id);
     } catch (err) {
@@ -86,13 +117,23 @@ async function runUpdateCycle(reason) {
 
   // Retention pass
   const freshFeeds = await getEnabledFeeds();
+  let prunedFeeds = 0;
   for (const feed of freshFeeds) {
     try {
       await pruneOldBookmarks(feed);
+      prunedFeeds += 1;
     } catch (err) {
       console.error(`[RSS-BOOK] Error pruning feed ${feed.url}:`, err);
     }
   }
+
+  await updateLifecycle({
+    lastCycleAt: Date.now(),
+    lastCycleReason: reason,
+    lastCycleFeedCount: updatedFeeds,
+    lastPruneFeedCount: prunedFeeds,
+    enabledFeedCount: freshFeeds.length
+  });
 }
 
 export function shouldUpdateFeedForReason(feed, reason, settings = {}, now = Date.now()) {
@@ -207,3 +248,5 @@ async function discoverFeedsOnTab(tabId) {
 
   return feeds;
 }
+
+export { bootPromise };

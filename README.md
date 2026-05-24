@@ -67,7 +67,7 @@ Create the upload-ready ZIP with `npm run package`. The generated archive stays 
 
 ## Development
 
-RSS-BOOK has no bundling step. The repository includes 30 dependency-free Node tests for parser behavior, a 10-fixture RSS/Atom feed matrix, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, light/dark theme CSS coverage, and Edge package contents:
+RSS-BOOK has no bundling step. The repository includes 33 dependency-free Node tests for parser behavior, a 10-fixture RSS/Atom feed matrix, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, lifecycle diagnostics, light/dark theme CSS coverage, and Edge package contents:
 
 ```bash
 npm test

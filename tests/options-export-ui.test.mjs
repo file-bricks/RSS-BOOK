@@ -74,7 +74,7 @@ class FakeElement {
   }
 }
 
-function installOptionsPage({ feeds }) {
+function installOptionsPage({ feeds, lifecycle } = {}) {
   const elements = new Map();
   for (const id of [
     "updateOnStartup",
@@ -82,6 +82,7 @@ function installOptionsPage({ feeds }) {
     "rootFolderName",
     "deleteBookmarks",
     "saveSettings",
+    "refreshLifecycleBtn",
     "addBtn",
     "feedUrl",
     "importOPMLBtn",
@@ -89,6 +90,7 @@ function installOptionsPage({ feeds }) {
     "exportOPMLBtn",
     "exportAllFoldersBtn",
     "feedList",
+    "lifecycleInfo",
     "settingsStatus",
     "feedStatus"
   ]) {
@@ -126,7 +128,7 @@ function installOptionsPage({ feeds }) {
         async get(keys) {
           return Object.fromEntries(keys.map((key) => [
             key,
-            key === "feeds" ? feeds : undefined
+            key === "feeds" ? feeds : key === "lifecycle" ? lifecycle : undefined
           ]));
         },
         async set() {}
@@ -177,6 +179,8 @@ test("options page exposes folder export button", () => {
 
   assert.match(html, /id="exportAllFoldersBtn"/);
   assert.match(html, /data-i18n="optionsExportAllFolders"/);
+  assert.match(html, /id="refreshLifecycleBtn"/);
+  assert.match(html, /id="lifecycleInfo"/);
 });
 
 test("options folder export button writes bookmark .url files and shows count", async () => {
@@ -199,4 +203,29 @@ test("options folder export button writes bookmark .url files and shows count", 
     "[InternetShortcut]\r\nURL=https://example.test/entry\r\n"
   ]);
   assert.equal(elements.get("feedStatus").textContent, "exported:1");
+});
+
+test("options page renders lifecycle diagnostics from storage", async () => {
+  const { elements } = installOptionsPage({
+    feeds: {},
+    lifecycle: {
+      workerBootedAt: Date.parse("2026-05-24T10:00:00Z"),
+      alarmIntervalMinutes: 15,
+      alarmSource: "feed",
+      enabledFeedCount: 2,
+      lastCycleAt: Date.parse("2026-05-24T10:05:00Z"),
+      lastCycleReason: "alarm",
+      lastCycleFeedCount: 2,
+      lastPruneFeedCount: 2
+    }
+  });
+
+  await import(`../ui/options.js?options-lifecycle=${Date.now()}`);
+
+  const lifecycleText = elements.get("lifecycleInfo").textContent;
+  assert.match(lifecycleText, /optionsLifecycleBoot/);
+  assert.match(lifecycleText, /2026-05-24T10:00:00\.000Z/);
+  assert.match(lifecycleText, /15 min \(optionsLifecycleAlarmSourceFeed\)/);
+  assert.match(lifecycleText, /optionsLifecycleLastReasonoptionsLifecycleReasonAlarm/);
+  assert.match(lifecycleText, /optionsLifecycleProcessedFeeds2/);
 });
