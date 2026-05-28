@@ -1,9 +1,13 @@
 # RSS-BOOK
 
+Bookmark-based RSS reader browser extension for Chrome, Edge, Brave and Vivaldi.
+
 RSS-BOOK is a privacy-first RSS and Atom feed reader for Chromium browsers.
 Instead of creating another account or cloud database, it saves feed entries as
 browser bookmarks so Chrome, Edge, Brave and Vivaldi sync can carry them across
-devices.
+devices. It is built for readers who want a lightweight Chrome Web Store RSS
+extension with OPML import/export, feed discovery, notifications, dark mode and
+no tracking.
 
 ![RSS-BOOK](assets/social-preview.png)
 
@@ -17,6 +21,15 @@ devices.
 ![RSS-BOOK Screenshot](README/screenshots/main_view.png)
 
 ---
+
+## Get RSS-BOOK
+
+- **Chrome Web Store:** [Install RSS-BOOK](https://chromewebstore.google.com/detail/rss-book/aednfjhookicnhcjhjifbaepglinbdli)
+- **GitHub Releases:** [Download the extension ZIP](https://github.com/file-bricks/RSS-BOOK/releases)
+- **Source code:** [file-bricks/RSS-BOOK](https://github.com/file-bricks/RSS-BOOK)
+
+RSS-BOOK is also usable by sideloading the unpacked repository in Chrome, Edge,
+Brave or Vivaldi.
 
 ## How it works
 
@@ -41,6 +54,11 @@ Your feeds live in your bookmarks — accessible everywhere your browser syncs, 
 
 ## Install
 
+### Chrome Web Store
+
+Install the published extension from the
+[Chrome Web Store](https://chromewebstore.google.com/detail/rss-book/aednfjhookicnhcjhjifbaepglinbdli).
+
 ### From GitHub (Chrome, Edge, Brave, Vivaldi)
 
 1. Download or clone this repository
@@ -51,6 +69,13 @@ Your feeds live in your bookmarks — accessible everywhere your browser syncs, 
 ### Edge Add-ons package
 
 Create the upload-ready ZIP with `npm run package`. The generated archive stays local under `dist/` and is intentionally ignored by git.
+
+## Product Screenshots
+
+![RSS-BOOK popup with subscribed feeds](assets/screenshot-1-popup.png)
+![RSS-BOOK options page with feed settings](assets/screenshot-2-options.png)
+![RSS-BOOK browser bookmark folders](assets/screenshot-3-folders.png)
+![RSS-BOOK saved feed entries as bookmarks](assets/screenshot-4-entries.png)
 
 ## Usage
 
@@ -67,7 +92,7 @@ Create the upload-ready ZIP with `npm run package`. The generated archive stays 
 
 ## Development
 
-RSS-BOOK has no bundling step. The repository includes 33 dependency-free Node tests for parser behavior, a 10-fixture RSS/Atom feed matrix, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, lifecycle diagnostics, light/dark theme CSS coverage, and Edge package contents:
+RSS-BOOK has no bundling step. The repository includes 34 dependency-free Node tests for parser behavior, a 10-fixture RSS/Atom feed matrix, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, lifecycle diagnostics, light/dark theme CSS coverage, and Edge package contents:
 
 ```bash
 npm test
@@ -131,6 +156,12 @@ RSS-BOOK/
 - [x] Configurable bookmark folder name
 - [x] Bookmark folder survives rename/move (tracked by ID)
 - [x] Option to delete bookmarks on unsubscribe
+
+## Discovery keywords
+
+`RSS reader`, `Atom feed reader`, `Chrome RSS extension`, `bookmark-based RSS reader`,
+`browser bookmark feed reader`, `Manifest V3 RSS`, `OPML import export`,
+`privacy-first RSS reader`, `no-account feed reader`, `Edge RSS extension`.
 
 ## License
 
