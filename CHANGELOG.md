@@ -14,6 +14,7 @@
 - Booting the service worker now refreshes stored alarm diagnostics even before `onStartup` or manual settings changes run.
 - Fixed alarm updates for manual-only feeds when global interval is disabled but other feeds define per-feed intervals.
 - Fixed RSS and Atom text parsing so CDATA wrappers are removed from feed titles, item titles, links, and Atom dates.
+- Fixed OPML imports so duplicate feed URLs inside the same file are only imported once.
 - Fixed RSS 1.0/RDF parsing so item blocks outside the channel block are no longer ignored.
 - Normalized the German locale file to real UTF-8 Umlaute instead of escaped code points.
 

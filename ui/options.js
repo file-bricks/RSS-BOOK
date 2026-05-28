@@ -122,6 +122,7 @@ document.getElementById("opmlFileInput").addEventListener("change", async (e) =>
         lastError: "",
         seen: {}
       });
+      existingUrls.add(item.url);
       imported++;
     }
 

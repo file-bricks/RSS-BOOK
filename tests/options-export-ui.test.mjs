@@ -10,6 +10,7 @@ afterEach(() => {
   delete globalThis.chrome;
   delete globalThis.document;
   delete globalThis.window;
+  delete globalThis.crypto;
 });
 
 class FakeElement {
@@ -76,6 +77,11 @@ class FakeElement {
 
 function installOptionsPage({ feeds, lifecycle } = {}) {
   const elements = new Map();
+  const store = {
+    feeds: structuredClone(feeds || {}),
+    lifecycle: structuredClone(lifecycle || {}),
+    settings: {}
+  };
   for (const id of [
     "updateOnStartup",
     "globalInterval",
@@ -119,6 +125,7 @@ function installOptionsPage({ feeds, lifecycle } = {}) {
     i18n: {
       getMessage(key, substitutions = []) {
         if (key === "optionsExported") return `exported:${substitutions[0]}`;
+        if (key === "optionsOPMLImported") return `imported:${substitutions[0]}`;
         if (key === "popupError") return `error:${substitutions[0]}`;
         return key;
       }
@@ -126,12 +133,13 @@ function installOptionsPage({ feeds, lifecycle } = {}) {
     storage: {
       local: {
         async get(keys) {
-          return Object.fromEntries(keys.map((key) => [
-            key,
-            key === "feeds" ? feeds : key === "lifecycle" ? lifecycle : undefined
-          ]));
+          return Object.fromEntries(keys.map((key) => [key, structuredClone(store[key])]));
         },
-        async set() {}
+        async set(patch) {
+          for (const [key, value] of Object.entries(patch)) {
+            store[key] = structuredClone(value);
+          }
+        }
       }
     },
     bookmarks: {
@@ -171,7 +179,16 @@ function installOptionsPage({ feeds, lifecycle } = {}) {
     }
   };
 
-  return { elements, writes };
+  Object.defineProperty(globalThis, "crypto", {
+    configurable: true,
+    value: {
+      randomUUID() {
+        return `feed-${Object.keys(store.feeds).length + 1}`;
+      }
+    }
+  });
+
+  return { elements, writes, store };
 }
 
 test("options page exposes folder export button", () => {
@@ -203,6 +220,30 @@ test("options folder export button writes bookmark .url files and shows count", 
     "[InternetShortcut]\r\nURL=https://example.test/entry\r\n"
   ]);
   assert.equal(elements.get("feedStatus").textContent, "exported:1");
+});
+
+test("OPML import ignores duplicate feed URLs within the same file", async () => {
+  const { elements, store } = installOptionsPage({ feeds: {} });
+  const opmlFile = {
+    async text() {
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <body>
+    <outline text="Alpha" xmlUrl="https://example.test/feed.xml" />
+    <outline text="Alpha Duplicate" xmlUrl="https://example.test/feed.xml" />
+  </body>
+</opml>`;
+    }
+  };
+
+  await import(`../ui/options.js?options-opml=${Date.now()}`);
+
+  const input = elements.get("opmlFileInput");
+  await input.listeners.change({ target: { files: [opmlFile], value: "picked.opml" } });
+
+  assert.equal(Object.keys(store.feeds).length, 1);
+  assert.equal(store.feeds["feed-1"]?.url, "https://example.test/feed.xml");
+  assert.equal(elements.get("feedStatus").textContent, "imported:1");
 });
 
 test("options page renders lifecycle diagnostics from storage", async () => {
