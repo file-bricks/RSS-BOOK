@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- Added `PORTIERUNGSPLAN.md` with a usecase-based platform strategy for browser-store distribution, Firefox feasibility, and explicit non-goals for native desktop/mobile/PWA lines.
 - Added `llms.txt` with canonical links, feature summary, developer commands, and search phrases for crawler/LLM discovery.
 - Added README links to the live Chrome Web Store listing and GitHub Releases page.
 - Added README product screenshot gallery using the existing store screenshots.
