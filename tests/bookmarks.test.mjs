@@ -205,3 +205,34 @@ test("pruneOldBookmarks removes only expired bookmark URLs", async () => {
 
   assert.deepEqual(removed, ["old-url"]);
 });
+
+test("addItemsToBookmarks: items without guid or link use stable fallback key that prevents re-adding", async () => {
+  // Regression for simpleHash overflow: Math.imul must be used so that two
+  // distinct strings (different published date) produce different keys and
+  // the same string always produces the same key across calls.
+  Date.now = () => 1_777_521_600_000;
+  const { store, storage } = installStorage({
+    settings: {},
+    feeds: { feedA: { id: "feedA", seen: {} } }
+  });
+  const created = [];
+  globalThis.chrome = {
+    storage,
+    bookmarks: {
+      async create(p) { created.push(p); return { id: `bm-${created.length}` }; }
+    }
+  };
+
+  // Two items differ only in published date — they must get distinct keys
+  const items = [
+    { title: "No guid or link", link: "https://a.example/1", guid: "", published: "2026-01-01" },
+    { title: "No guid or link", link: "https://a.example/2", guid: "", published: "2026-01-02" }
+  ];
+  const r1 = await addItemsToBookmarks({ id: "feedA", seen: {} }, "fold", items);
+  assert.equal(r1.addedCount, 2, "distinct fallback keys → both items added");
+
+  // Same items again — none should be re-added
+  const seenAfter = store.feeds.feedA.seen;
+  const r2 = await addItemsToBookmarks({ id: "feedA", seen: seenAfter }, "fold", items);
+  assert.equal(r2.addedCount, 0, "same fallback keys → deduplication works");
+});
