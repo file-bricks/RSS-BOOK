@@ -1,0 +1,42 @@
+# RSS-BOOK
+
+> RSS-BOOK is a privacy-first Manifest V3 browser extension for Chrome, Edge,
+> Brave and Vivaldi. It turns RSS and Atom feed entries into browser bookmarks
+> instead of storing them in a cloud account.
+
+## Canonical links
+
+- GitHub: https://github.com/file-bricks/RSS-BOOK
+- Chrome Web Store: https://chromewebstore.google.com/detail/rss-book/aednfjhookicnhcjhjifbaepglinbdli
+- Releases: https://github.com/file-bricks/RSS-BOOK/releases
+- Privacy policy: https://github.com/file-bricks/RSS-BOOK/blob/main/PRIVACY_POLICY.md
+
+## What it does
+
+- Saves RSS and Atom feed entries as browser bookmarks.
+- Uses local browser storage for configuration and cache metadata.
+- Supports OPML import/export, feed discovery, notifications and dark mode.
+- Avoids accounts, telemetry, analytics and third-party proxy services.
+- Runs as a dependency-free Chromium Manifest V3 extension.
+
+## Developer commands
+
+```bash
+npm test
+npm run package
+```
+
+## Important files
+
+- `manifest.json` - Chromium Manifest V3 extension metadata.
+- `sw.js` - service worker for scheduled feed updates.
+- `lib/rss.js` - RSS/Atom parser.
+- `lib/bookmarks.js` - bookmark folder and item management.
+- `ui/popup.html` / `ui/options.html` - extension interface.
+- `_locales/en/messages.json` and `_locales/de/messages.json` - UI strings.
+
+## Search phrases
+
+RSS reader browser extension, Chrome RSS extension, bookmark-based RSS reader,
+privacy-first RSS reader, Manifest V3 RSS reader, OPML feed reader, Edge RSS
+extension, Atom feed reader for Chromium.

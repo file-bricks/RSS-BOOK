@@ -1,4 +1,4 @@
-# Interne Dateien
+﻿# Interne Dateien
 AUFGABEN.txt
 TEST.txt
 TESTS.txt
@@ -38,3 +38,8 @@ coverage/
 dist/
 build/
 web-ext-artifacts/
+# ---- Interne Steuerungsdateien ----
+DECISIONS.md
+PORTIERUNGSPLAN.md
+TODO.md
+DONE.md

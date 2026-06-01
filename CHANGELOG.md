@@ -3,6 +3,10 @@
 ## [Unreleased]
 
 ### Added
+- Added `PORTIERUNGSPLAN.md` with a usecase-based platform strategy for browser-store distribution, Firefox feasibility, and explicit non-goals for native desktop/mobile/PWA lines.
+- Added `llms.txt` with canonical links, feature summary, developer commands, and search phrases for crawler/LLM discovery.
+- Added README links to the live Chrome Web Store listing and GitHub Releases page.
+- Added README product screenshot gallery using the existing store screenshots.
 - Added options-page lifecycle diagnostics for service-worker boot, alarm cadence, and recent update-cycle activity.
 - Added automated light/dark theme coverage for popup and options CSS variables.
 - Added a read-only GitHub Actions CI workflow for the Node test suite.
@@ -19,10 +23,11 @@
 - Normalized the German locale file to real UTF-8 Umlaute instead of escaped code points.
 
 ### Changed
+- Clarified README positioning for bookmark-based RSS reader and Chrome Web Store search queries.
 - Added repository line-ending rules, explicitly ignored local pytest caches, and updated the README Edge packaging note.
 
 ### Verified
-- `npm test` now covers 33 dependency-free Node tests, including the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, and package-content coverage.
+- `npm test` now covers 34 dependency-free Node tests, including the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, and package-content coverage.
 - `npm run package` creates `dist/RSS-BOOK-v1.1.2-edge.zip` with the Manifest V3 runtime files plus license/privacy docs.
 
 ## [1.1.2] — 2026-04-30
