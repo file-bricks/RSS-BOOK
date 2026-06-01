@@ -42,3 +42,16 @@ test("round-trips generated OPML back into feed records", () => {
 
   assert.deepEqual(parseOPML(generateOPML(sourceFeeds)), sourceFeeds);
 });
+
+test("parseOPML decodes numeric XML entities in feed titles", () => {
+  // Regression: older OPML exporters may encode accented chars as &#233; or &#xE9;
+  const opml = `<opml version="2.0"><body>
+    <outline text="Caf&#233; Scientifique" title="Caf&#233; Scientifique" type="rss" xmlUrl="https://cafe.test/feed" />
+    <outline text="R&#xE9;sum&#233;" type="rss" xmlUrl="https://resume.test/feed" />
+  </body></opml>`;
+
+  const feeds = parseOPML(opml);
+  assert.equal(feeds.length, 2);
+  assert.equal(feeds[0].title, "Café Scientifique");
+  assert.equal(feeds[1].title, "Résumé");
+});

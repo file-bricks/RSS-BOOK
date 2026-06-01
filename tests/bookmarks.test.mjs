@@ -4,7 +4,8 @@ import assert from "node:assert/strict";
 import {
   addItemsToBookmarks,
   ensureFeedFolder,
-  pruneOldBookmarks
+  pruneOldBookmarks,
+  simpleHash
 } from "../lib/bookmarks.js";
 
 const originalNow = Date.now;
@@ -204,6 +205,23 @@ test("pruneOldBookmarks removes only expired bookmark URLs", async () => {
   });
 
   assert.deepEqual(removed, ["old-url"]);
+});
+
+test("simpleHash produces correct FNV-1a 32-bit hashes without float overflow", () => {
+  // These expected values are computed with Math.imul (correct 32-bit FNV-1a).
+  // The old float-multiply implementation produced different values for inputs
+  // whose first-character product exceeded Number.MAX_SAFE_INTEGER.
+  assert.equal(simpleHash(""), "811c9dc5");             // empty string = initial seed
+  assert.equal(simpleHash("a"), "e40c292c");            // FNV-1a of 'a' = 0xe40c292c
+  assert.equal(simpleHash("ab"), "4d2505ca");           // chained
+
+  // Distinct inputs must produce distinct hashes
+  const h1 = simpleHash("title1|2026-01-01|");
+  const h2 = simpleHash("title1|2026-01-02|");
+  assert.notEqual(h1, h2, "different inputs must produce different hashes");
+
+  // Same input must produce the same hash on repeated calls
+  assert.equal(simpleHash("stable input"), simpleHash("stable input"));
 });
 
 test("addItemsToBookmarks: items without guid or link use stable fallback key that prevents re-adding", async () => {
