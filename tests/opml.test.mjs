@@ -55,3 +55,11 @@ test("parseOPML decodes numeric XML entities in feed titles", () => {
   assert.equal(feeds[0].title, "Café Scientifique");
   assert.equal(feeds[1].title, "Résumé");
 });
+
+test("parseOPML trims whitespace from xmlUrl values", () => {
+  const feeds = parseOPML(
+    `<opml><body><outline text="Padded" xmlUrl="  https://padded.example/feed  " /></body></opml>`
+  );
+  assert.equal(feeds.length, 1);
+  assert.equal(feeds[0].url, "https://padded.example/feed");
+});
