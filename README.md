@@ -163,6 +163,17 @@ RSS-BOOK/
 `browser bookmark feed reader`, `Manifest V3 RSS`, `OPML import export`,
 `privacy-first RSS reader`, `no-account feed reader`, `Edge RSS extension`.
 
+## Related Project / Geschwisterprojekt
+
+| Projekt | Distribution | Sync | Native Messaging |
+|---|---|---|---|
+| **RSS-BOOK** (dieses Projekt) | Chrome Web Store + GitHub | Einweg (Feeds → Lesezeichen) | Nein |
+| [RSS-BOOKSTORE](https://github.com/file-bricks/RSS-BOOKSTORE) | GitHub / Sideloading | Bidirektional (Lesezeichen ↔ Ordner) | Ja |
+
+RSS-BOOKSTORE is the power-user edition: it adds a Native Messaging host and
+bidirectional sync between browser bookmarks and a local Windows folder.
+It requires a manual sideload installation and a Python runtime.
+
 ## License
 
 [MIT](LICENSE)
