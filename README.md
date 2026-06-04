@@ -16,12 +16,6 @@ no tracking.
 ![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
 ![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
 
-## Screenshot
-
-![RSS-BOOK Screenshot](README/screenshots/main_view.png)
-
----
-
 ## Get RSS-BOOK
 
 - **Chrome Web Store:** [Install RSS-BOOK](https://chromewebstore.google.com/detail/rss-book/aednfjhookicnhcjhjifbaepglinbdli)
@@ -211,4 +205,3 @@ Dieses Projekt ist eine **unentgeltliche Open-Source-Schenkung** im Sinne der §
 Nutzung auf eigenes Risiko. Keine Wartungszusage, keine Verfügbarkeitsgarantie, keine Gewähr für Fehlerfreiheit oder Eignung für einen bestimmten Zweck.
 
 This project is an unpaid open-source donation. Liability is limited to intent and gross negligence (§ 521 German Civil Code). Use at your own risk. No warranty, no maintenance guarantee, no fitness-for-purpose assumed.
-

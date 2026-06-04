@@ -52,6 +52,4 @@ test("store icon and screenshot assets have release-ready dimensions", () => {
   for (const fileName of screenshotFiles) {
     assert.deepEqual(pngSize(path.join("assets", fileName)), { width: 1280, height: 800 });
   }
-
-  assert.deepEqual(pngSize("README/screenshots/main_view.png"), { width: 1280, height: 800 });
 });
