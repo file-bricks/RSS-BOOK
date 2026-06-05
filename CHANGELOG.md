@@ -19,15 +19,19 @@
 - Fixed alarm updates for manual-only feeds when global interval is disabled but other feeds define per-feed intervals.
 - Fixed RSS and Atom text parsing so CDATA wrappers are removed from feed titles, item titles, links, and Atom dates.
 - Fixed OPML imports so duplicate feed URLs inside the same file are only imported once.
+- Fixed OPML imports so `xmlUrl` values are trimmed before feed records are stored.
+- Fixed OPML title decoding for numeric XML entities.
 - Fixed RSS 1.0/RDF parsing so item blocks outside the channel block are no longer ignored.
+- Fixed bookmark fallback hashing to use integer-safe `Math.imul` FNV-1a behavior.
 - Normalized the German locale file to real UTF-8 Umlaute instead of escaped code points.
 
 ### Changed
 - Clarified README positioning for bookmark-based RSS reader and Chrome Web Store search queries.
 - Added repository line-ending rules, explicitly ignored local pytest caches, and updated the README Edge packaging note.
+- Removed an unused README screenshot reference after the asset was dropped.
 
 ### Verified
-- `npm test` now covers 34 dependency-free Node tests, including the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, and package-content coverage.
+- `npm test` now covers 38 dependency-free Node tests, including the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, OPML entity/URL normalization, hashing, and package-content coverage.
 - `npm run package` creates `dist/RSS-BOOK-v1.1.2-edge.zip` with the Manifest V3 runtime files plus license/privacy docs.
 
 ## [1.1.2] — 2026-04-30
