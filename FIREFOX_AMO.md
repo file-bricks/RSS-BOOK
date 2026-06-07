@@ -13,7 +13,7 @@ Analysierter Stand: RSS-BOOK v1.1.2, manifest.json v1.1.2+gecko
 Die Extension kann mit den unten dokumentierten Manifest-Ergänzungen bei AMO eingereicht werden.
 Sie wird in Firefox aber nicht funktionieren, da zwei zentrale Architektur-Entscheidungen
 direkt inkompatibel mit Firefox sind: das Background-Service-Worker-Modell und der
-`await chrome.*`-Aufruf-Stil.
+`await chrome.*`-Aufruf-Stil (Callback-basiert in Firefox; `await` ist dort unzuverlässig).
 
 ---
 
@@ -43,12 +43,12 @@ direkt inkompatibel mit Firefox sind: das Background-Service-Worker-Modell und d
 
 | API-Aufruf in sw.js / ui/ | Firefox-Status | Details |
 |---|---|---|
-| `await chrome.storage.local.get()` | ❌ gibt `undefined` zurück | Firefox `chrome.*` ist Callback-basiert, nicht Promise-basiert. Nur `browser.*` gibt Promises zurück. |
-| `await chrome.storage.local.set()` | ❌ gibt `undefined` zurück | Gleiche Ursache |
-| `await chrome.alarms.get()` | ❌ gibt `undefined` zurück | Gleiche Ursache |
+| `await chrome.storage.local.get()` | ⚠️ unzuverlässig | Firefox `chrome.*` ist Callback-basiert, nicht Promise-basiert. `await chrome.*()` ist unzuverlässig; nur `browser.*` gibt garantiert Promises zurück. |
+| `await chrome.storage.local.set()` | ⚠️ unzuverlässig | Gleiche Ursache |
+| `await chrome.alarms.get()` | ⚠️ unzuverlässig | Gleiche Ursache |
 | `chrome.runtime.onInstalled.addListener()` | ✅ | Listener-API funktioniert in Firefox auch mit `chrome.*` |
 | `chrome.alarms.onAlarm.addListener()` | ✅ | Listener-API funktioniert |
-| `await chrome.bookmarks.*` | ❌ gibt `undefined` zurück | Gleiche Ursache wie storage |
+| `await chrome.bookmarks.*` | ⚠️ unzuverlässig | Gleiche Ursache wie storage |
 | `showDirectoryPicker()` | ❌ nicht verfügbar | File System Access API nicht implementiert in Firefox |
 | `chrome.i18n.getMessage()` | ✅ | Synchron, Callback-frei, funktioniert |
 | `chrome.notifications.create()` | ✅ | Callback-basiert, kein await nötig |

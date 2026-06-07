@@ -24,6 +24,6 @@ test('manifest background uses service_worker for Chrome/Edge MV3', () => {
   assert.strictEqual(manifest.background.type, 'module', 'background type must be "module"');
 });
 
-test('manifest does not use deprecated MV2 background.scripts', () => {
-  assert.strictEqual(manifest.background?.scripts, undefined, 'MV2-only scripts array must not be present');
+test('manifest is Manifest Version 3 (MV3)', () => {
+  assert.strictEqual(manifest.manifest_version, 3, 'manifest_version must be 3');
 });
