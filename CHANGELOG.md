@@ -3,6 +3,12 @@
 ## [Unreleased]
 
 ### Added
+- Added `browser_specific_settings.gecko` block to `manifest.json` (`id: rss-book@file-bricks`, `strict_min_version: 128.0`) — required for Firefox AMO submission.
+- Added `tests/firefox-compat.test.mjs` with four manifest-level AMO-eligibility checks (gecko.id, strict_min_version, service_worker, no MV2 scripts). 42/42 tests passing.
+- Added `FIREFOX_AMO.md` documenting the Firefox compatibility matrix, API deltas, three runtime blockers (background.service_worker not supported, chrome.* callbacks-only, showDirectoryPicker unavailable), and an estimated migration effort of 2–3 working days.
+
+### Fixed
+- Restored `icons` field in `manifest.json` to the correct browser-extension dict format (`{16, 48, 128}`) after a previous session had changed it to a PWA-style array, which broke three existing packaging tests.
 - Added `PORTIERUNGSPLAN.md` with a usecase-based platform strategy for browser-store distribution, Firefox feasibility, and explicit non-goals for native desktop/mobile/PWA lines.
 - Added `llms.txt` with canonical links, feature summary, developer commands, and search phrases for crawler/LLM discovery.
 - Added README links to the live Chrome Web Store listing and GitHub Releases page.

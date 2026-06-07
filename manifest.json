@@ -4,8 +4,23 @@
   "version": "1.1.2",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
-  "permissions": ["bookmarks", "storage", "alarms", "notifications", "activeTab", "scripting"],
-  "host_permissions": ["<all_urls>"],
+  "permissions": [
+    "bookmarks",
+    "storage",
+    "alarms",
+    "notifications",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "rss-book@file-bricks",
+      "strict_min_version": "128.0"
+    }
+  },
   "background": {
     "service_worker": "sw.js",
     "type": "module"
