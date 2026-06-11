@@ -148,8 +148,10 @@ document.getElementById("exportOPMLBtn").addEventListener("click", async () => {
   const a = document.createElement("a");
   a.href = url;
   a.download = "rss-book-feeds.opml";
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 
   showStatus("feedStatus", t("optionsOPMLExported"));
 });

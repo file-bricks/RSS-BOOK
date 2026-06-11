@@ -98,42 +98,48 @@ async function ensureAlarm() {
 
 // --- Update Cycle ---
 
+let _cycleInFlight = null;
+
 async function runUpdateCycle(reason) {
-  console.log(`[RSS-BOOK] Update cycle (${reason})`);
-  const { settings } = await getState();
-  const feeds = await getEnabledFeeds();
-  let updatedFeeds = 0;
+  if (_cycleInFlight) return _cycleInFlight;
+  _cycleInFlight = (async () => {
+    console.log(`[RSS-BOOK] Update cycle (${reason})`);
+    const { settings } = await getState();
+    const feeds = await getEnabledFeeds();
+    let updatedFeeds = 0;
 
-  for (const feed of feeds) {
-    if (!shouldUpdateFeedForReason(feed, reason, settings)) continue;
-    updatedFeeds += 1;
-    try {
-      await updateOneFeed(feed.id);
-    } catch (err) {
-      console.error(`[RSS-BOOK] Error updating feed ${feed.url}:`, err);
-      await upsertFeed(feed.id, { lastError: err.message, lastFetch: Date.now() });
+    for (const feed of feeds) {
+      if (!shouldUpdateFeedForReason(feed, reason, settings)) continue;
+      updatedFeeds += 1;
+      try {
+        await updateOneFeed(feed.id);
+      } catch (err) {
+        console.error(`[RSS-BOOK] Error updating feed ${feed.url}:`, err);
+        await upsertFeed(feed.id, { lastError: err.message, lastFetch: Date.now() });
+      }
     }
-  }
 
-  // Retention pass
-  const freshFeeds = await getEnabledFeeds();
-  let prunedFeeds = 0;
-  for (const feed of freshFeeds) {
-    try {
-      await pruneOldBookmarks(feed);
-      prunedFeeds += 1;
-    } catch (err) {
-      console.error(`[RSS-BOOK] Error pruning feed ${feed.url}:`, err);
+    // Retention pass
+    const freshFeeds = await getEnabledFeeds();
+    let prunedFeeds = 0;
+    for (const feed of freshFeeds) {
+      try {
+        await pruneOldBookmarks(feed);
+        prunedFeeds += 1;
+      } catch (err) {
+        console.error(`[RSS-BOOK] Error pruning feed ${feed.url}:`, err);
+      }
     }
-  }
 
-  await updateLifecycle({
-    lastCycleAt: Date.now(),
-    lastCycleReason: reason,
-    lastCycleFeedCount: updatedFeeds,
-    lastPruneFeedCount: prunedFeeds,
-    enabledFeedCount: freshFeeds.length
-  });
+    await updateLifecycle({
+      lastCycleAt: Date.now(),
+      lastCycleReason: reason,
+      lastCycleFeedCount: updatedFeeds,
+      lastPruneFeedCount: prunedFeeds,
+      enabledFeedCount: freshFeeds.length
+    });
+  })();
+  try { return await _cycleInFlight; } finally { _cycleInFlight = null; }
 }
 
 export function shouldUpdateFeedForReason(feed, reason, settings = {}, now = Date.now()) {
