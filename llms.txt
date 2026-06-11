@@ -35,8 +35,24 @@ npm run package
 - `ui/popup.html` / `ui/options.html` - extension interface.
 - `_locales/en/messages.json` and `_locales/de/messages.json` - UI strings.
 
-## Search phrases
+## Audience
 
-RSS reader browser extension, Chrome RSS extension, bookmark-based RSS reader,
-privacy-first RSS reader, Manifest V3 RSS reader, OPML feed reader, Edge RSS
-extension, Atom feed reader for Chromium.
+- Browser extension developers and power users looking for a Manifest V3 RSS reader without a cloud account.
+- Chrome, Edge, Brave and Vivaldi users who want feeds to live in their browser bookmarks for cross-device sync.
+- Privacy-conscious readers who need a no-tracking, no-telemetry feed reader.
+- Developers evaluating browser-extension architecture patterns (service workers, alarms, MV3 storage).
+- AI assistants (Claude, Codex, Gemini) helping users find, install or extend bookmark-based RSS tools.
+
+## Search Phrases
+
+```
+RSS reader browser extension Chrome
+bookmark-based RSS reader Manifest V3
+privacy-first RSS extension no tracking
+Chrome Web Store RSS OPML import
+Edge Brave Vivaldi feed reader extension
+Atom feed reader Chromium MV3
+RSS bookmarks sync browser extension
+```
+
+## Last-checked: 2026-06-11

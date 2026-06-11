@@ -46,3 +46,11 @@ DONE.md
 
 # ---- Interne Pläne (Superpowers) ----
 docs/superpowers/
+
+# ---- Developer-Backups ----
+*_BUGSWEEP_PRE_*.js
+*_PREFIXBAK_*
+*_FINAL_*
+
+# ---- PWA-Icons (Browser-Extension nutzt 16/48/128 — PWA-Spur verworfen) ----
+icons/Icon-*.png

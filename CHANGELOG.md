@@ -4,12 +4,9 @@
 
 ### Added
 - Added `browser_specific_settings.gecko` block to `manifest.json` (`id: rss-book@file-bricks`, `strict_min_version: 128.0`) — required for Firefox AMO submission.
-- Added `tests/firefox-compat.test.mjs` with four manifest-level AMO-eligibility checks (gecko.id, strict_min_version, service_worker, no MV2 scripts). 42/42 tests passing.
+- Added `tests/firefox-compat.test.mjs` with four manifest-level AMO-eligibility checks (gecko.id, strict_min_version, service_worker, no MV2 scripts).
 - Added `FIREFOX_AMO.md` documenting the Firefox compatibility matrix, API deltas, three runtime blockers (background.service_worker not supported, chrome.* callbacks-only, showDirectoryPicker unavailable), and an estimated migration effort of 2–3 working days.
-
-### Fixed
-- Restored `icons` field in `manifest.json` to the correct browser-extension dict format (`{16, 48, 128}`) after a previous session had changed it to a PWA-style array, which broke three existing packaging tests.
-- Added `PORTIERUNGSPLAN.md` with a usecase-based platform strategy for browser-store distribution, Firefox feasibility, and explicit non-goals for native desktop/mobile/PWA lines.
+- Added `tests/bugsweep-20260611.test.mjs` with 9 regression tests covering Bugs A–D.
 - Added `llms.txt` with canonical links, feature summary, developer commands, and search phrases for crawler/LLM discovery.
 - Added README links to the live Chrome Web Store listing and GitHub Releases page.
 - Added README product screenshot gallery using the existing store screenshots.
@@ -21,6 +18,11 @@
 - Added a 10-fixture RSS/Atom parser matrix covering WordPress-style RSS, podcast RSS, FeedBurner-style RSS, Media RSS, RSS 1.0/RDF, and common Atom feed variants.
 
 ### Fixed
+- **Bug A (options.js):** OPML export now appends the download anchor to `document.body` before `.click()` and defers `revokeObjectURL` via `setTimeout` — fixes silent export failure in Firefox.
+- **Bug B (storage.js):** Added `withFeedLock` promise-chaining mutex; `upsertFeed` and `removeFeed` now serialize under this lock to prevent concurrent writes from losing data.
+- **Bug C (sw.js):** Added `_cycleInFlight` guard to `runUpdateCycle`; overlapping alarm or startup triggers now coalesce onto the running promise instead of spawning parallel cycles.
+- **Bug D (storage.js):** Added `mergeFeedSeen(feedId, delta)` that merges seen-entry deltas atomically under `withFeedLock` and trims the seen set to a maximum of 800 entries (oldest removed first).
+- Restored `icons` field in `manifest.json` to the correct browser-extension dict format (`{16, 48, 128}`) after a previous session had changed it to a PWA-style array, which broke three existing packaging tests.
 - Booting the service worker now refreshes stored alarm diagnostics even before `onStartup` or manual settings changes run.
 - Fixed alarm updates for manual-only feeds when global interval is disabled but other feeds define per-feed intervals.
 - Fixed RSS and Atom text parsing so CDATA wrappers are removed from feed titles, item titles, links, and Atom dates.
@@ -37,7 +39,7 @@
 - Removed an unused README screenshot reference after the asset was dropped.
 
 ### Verified
-- `npm test` now covers 38 dependency-free Node tests, including the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, OPML entity/URL normalization, hashing, and package-content coverage.
+- 51/51 tests pass (`npm test`), covering the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, OPML entity/URL normalization, hashing, package-content coverage, Firefox AMO eligibility, and Bugs A–D regression.
 - `npm run package` creates `dist/RSS-BOOK-v1.1.2-edge.zip` with the Manifest V3 runtime files plus license/privacy docs.
 
 ## [1.1.2] — 2026-04-30
