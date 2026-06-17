@@ -18,6 +18,7 @@
 - Supports OPML import/export, feed discovery, notifications and dark mode.
 - Avoids accounts, telemetry, analytics and third-party proxy services.
 - Runs as a dependency-free Chromium Manifest V3 extension.
+- Publishes a Chrome Web Store listing and a GitHub release ZIP for sideloading.
 
 ## Developer commands
 
@@ -53,6 +54,16 @@ Chrome Web Store RSS OPML import
 Edge Brave Vivaldi feed reader extension
 Atom feed reader Chromium MV3
 RSS bookmarks sync browser extension
+Chrome Web Store bookmark RSS reader
+no account RSS reader browser bookmarks
+local first RSS reader extension
+file-bricks RSS-BOOK GitHub
 ```
 
-## Last-checked: 2026-06-11
+## Disambiguation
+
+RSS-BOOK is not an RSS feed generator for books, an icon pack, a GitBook plugin,
+or a cloud RSS reader. It is the file-bricks browser extension that stores RSS
+and Atom entries as browser bookmarks.
+
+## Last-checked: 2026-06-18

@@ -25,6 +25,16 @@ no tracking.
 RSS-BOOK is also usable by sideloading the unpacked repository in Chrome, Edge,
 Brave or Vivaldi.
 
+## Start here
+
+| Need | Use |
+|---|---|
+| Install the extension | Chrome Web Store listing |
+| Review the code | `sw.js`, `lib/rss.js`, `lib/bookmarks.js`, `ui/options.js` |
+| Check privacy behavior | `PRIVACY_POLICY.md` and the permissions table below |
+| Build an Edge upload ZIP | `npm run package` |
+| Compare the power-user edition | `RSS-BOOKSTORE` for Native Messaging and folder sync |
+
 ## How it works
 
 1. Add RSS or Atom feed URLs in the options page
@@ -155,7 +165,25 @@ RSS-BOOK/
 
 `RSS reader`, `Atom feed reader`, `Chrome RSS extension`, `bookmark-based RSS reader`,
 `browser bookmark feed reader`, `Manifest V3 RSS`, `OPML import export`,
-`privacy-first RSS reader`, `no-account feed reader`, `Edge RSS extension`.
+`privacy-first RSS reader`, `no-account feed reader`, `Edge RSS extension`,
+`RSS bookmarks sync`, `Chrome Web Store RSS reader`, `Chromium feed reader`,
+`local-first feed reader`.
+
+## Search and listing context
+
+Use the canonical repo name `file-bricks/RSS-BOOK` when linking this project.
+The short product name collides with book-RSS generators, RSS icons, GitBook
+feed plugins and generic RSS tutorials, so external listings should describe it
+as a **privacy-first Chrome Web Store RSS extension that stores feed entries as
+browser bookmarks**.
+
+Best-fit listing categories:
+
+- Chrome Web Store RSS and Atom feed readers
+- Manifest V3 browser extensions
+- Bookmark-based reading and cross-device browser sync tools
+- Privacy-first, no-account feed readers
+- Local-first productivity tools for Chrome, Edge, Brave and Vivaldi
 
 ## Related Project / Geschwisterprojekt
 

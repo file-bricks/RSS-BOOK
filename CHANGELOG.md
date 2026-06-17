@@ -34,6 +34,11 @@
 - Normalized the German locale file to real UTF-8 Umlaute instead of escaped code points.
 
 ### Changed
+- Refreshed README and `llms.txt` discovery metadata for Chrome Web Store,
+  Edge/Chromium, bookmark-sync, no-account RSS, and local-first feed-reader
+  searches.
+- Added package keywords for GitHub/package metadata indexing even though the
+  extension is not published to npm.
 - Clarified README positioning for bookmark-based RSS reader and Chrome Web Store search queries.
 - Added repository line-ending rules, explicitly ignored local pytest caches, and updated the README Edge packaging note.
 - Removed an unused README screenshot reference after the asset was dropped.
