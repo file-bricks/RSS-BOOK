@@ -34,6 +34,8 @@
 - Normalized the German locale file to real UTF-8 Umlaute instead of escaped code points.
 
 ### Changed
+- Added `LOCK*.txt` to `.gitignore` so local multi-agent coordination locks stay
+  out of public extension releases.
 - Refreshed README and `llms.txt` discovery metadata for Chrome Web Store,
   Edge/Chromium, bookmark-sync, no-account RSS, and local-first feed-reader
   searches.

@@ -4,6 +4,7 @@ TEST.txt
 TESTS.txt
 TESTERGEBNISSE.txt
 RELEASE_PLAN.md
+LOCK*.txt
 .env
 .env.*
 *.pem

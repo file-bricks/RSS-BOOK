@@ -66,4 +66,4 @@ RSS-BOOK is not an RSS feed generator for books, an icon pack, a GitBook plugin,
 or a cloud RSS reader. It is the file-bricks browser extension that stores RSS
 and Atom entries as browser bookmarks.
 
-## Last-checked: 2026-06-18
+## Last-checked: 2026-06-19
