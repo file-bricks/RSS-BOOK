@@ -117,6 +117,27 @@ test("strips CDATA wrappers from RSS and Atom text content", async () => {
   ]);
 });
 
+test("decodes XML entities once without double-decoding escaped entity text", async () => {
+  globalThis.fetch = async () => new Response(
+    `<?xml version="1.0"?>
+    <rss version="2.0">
+      <channel>
+        <title>Literal &amp;lt;Feed&amp;gt;</title>
+        <item>
+          <title>Literal &amp;lt;Post&amp;gt;</title>
+          <link>https://example.test/entity</link>
+        </item>
+      </channel>
+    </rss>`,
+    { status: 200 }
+  );
+
+  const parsed = await fetchFeedAndParse("https://example.test/feed.xml");
+
+  assert.equal(parsed.title, "Literal &lt;Feed&gt;");
+  assert.equal(parsed.items[0].title, "Literal &lt;Post&gt;");
+});
+
 test("parses Atom entries and prefers rel alternate links regardless of attribute order", async () => {
   globalThis.fetch = async () => new Response(
     `<feed xmlns="http://www.w3.org/2005/Atom">

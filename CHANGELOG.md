@@ -18,6 +18,7 @@
 - Added a 10-fixture RSS/Atom parser matrix covering WordPress-style RSS, podcast RSS, FeedBurner-style RSS, Media RSS, RSS 1.0/RDF, and common Atom feed variants.
 
 ### Fixed
+- XML-Entities in RSS- und OPML-Texten werden jetzt nur einmal dekodiert, damit bereits maskierte Entity-Texte nicht zu Markup werden.
 - **Bug A (options.js):** OPML export now appends the download anchor to `document.body` before `.click()` and defers `revokeObjectURL` via `setTimeout` — fixes silent export failure in Firefox.
 - **Bug B (storage.js):** Added `withFeedLock` promise-chaining mutex; `upsertFeed` and `removeFeed` now serialize under this lock to prevent concurrent writes from losing data.
 - **Bug C (sw.js):** Added `_cycleInFlight` guard to `runUpdateCycle`; overlapping alarm or startup triggers now coalesce onto the running promise instead of spawning parallel cycles.

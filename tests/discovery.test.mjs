@@ -100,7 +100,11 @@ test("probes common feed paths and ignores failed fetches", async () => {
     await probeCommonFeedPaths("https://example.test/article", [], fetchImpl),
     [{ url: "https://example.test/feed", title: "" }]
   );
-  assert.ok(calls.includes("https://example.test/rss"));
+  assert.deepEqual(calls.map((url) => new URL(url).pathname).slice(0, 3), [
+    "/feed",
+    "/feed/",
+    "/rss"
+  ]);
 });
 
 test("skips invalid page URLs and already known feed URLs", async () => {

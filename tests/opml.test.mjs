@@ -56,6 +56,18 @@ test("parseOPML decodes numeric XML entities in feed titles", () => {
   assert.equal(feeds[1].title, "Résumé");
 });
 
+test("parseOPML decodes XML entities once without double-decoding escaped entity text", () => {
+  const feeds = parseOPML(
+    `<opml><body>
+      <outline text="Literal &amp;lt;Feed&amp;gt;" xmlUrl="https://entity.example/feed" />
+    </body></opml>`
+  );
+
+  assert.deepEqual(feeds, [
+    { url: "https://entity.example/feed", title: "Literal &lt;Feed&gt;" }
+  ]);
+});
+
 test("parseOPML trims whitespace from xmlUrl values", () => {
   const feeds = parseOPML(
     `<opml><body><outline text="Padded" xmlUrl="  https://padded.example/feed  " /></body></opml>`
