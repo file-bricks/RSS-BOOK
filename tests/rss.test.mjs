@@ -183,6 +183,32 @@ test("returns empty items on 304 and keeps cached validators", async () => {
   });
 });
 
+test("RSS-Feed mit <feed>-Text im CDATA-Block wird nicht als Atom fehlinterpretiert", async () => {
+  // Regression: Wenn ein RSS-Item in seinem Beschreibungs-CDATA den Text "<feed " enthält,
+  // darf die Format-Erkennung nicht auf Atom umschalten und 0 Items liefern.
+  globalThis.fetch = async () => new Response(
+    `<?xml version="1.0"?>
+    <rss version="2.0">
+      <channel>
+        <title>Dev Blog</title>
+        <item>
+          <title>Feed-Referenz im Text</title>
+          <link>https://example.test/post</link>
+          <description><![CDATA[Abonniere unseren <feed type="rss"> hier.]]></description>
+          <guid>post-cdata-feed</guid>
+        </item>
+      </channel>
+    </rss>`,
+    { status: 200 }
+  );
+
+  const parsed = await fetchFeedAndParse("https://example.test/rss.xml");
+  assert.ok(parsed, "Feed muss geparst werden");
+  assert.equal(parsed.items.length, 1, "RSS-Feed muss 1 Item liefern");
+  assert.equal(parsed.items[0].title, "Feed-Referenz im Text");
+  assert.equal(parsed.items[0].link, "https://example.test/post");
+});
+
 test("returns null for failed requests and unknown feed formats", async () => {
   muteWarnings();
   globalThis.fetch = async () => {

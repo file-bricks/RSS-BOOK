@@ -3,6 +3,14 @@
 ## [Unreleased]
 
 ### Added
+- Added `npm run edge-preflight`, a dependency-free Microsoft Edge Add-ons
+  preflight that rebuilds the upload ZIP, validates store icon/screenshots,
+  resolves listing text from locale messages, checks the privacy file, and
+  writes `dist/EDGE_ADDONS_PREFLIGHT.md`.
+- Added `BROWSER_SMOKE.md` with the manual Edge, Chrome, Brave and Vivaldi
+  smoke matrix for pre-submission checks.
+- Added `tests/edge-preflight.test.mjs` covering report-writing and validation-only
+  Edge preflight runs.
 - Added `browser_specific_settings.gecko` block to `manifest.json` (`id: rss-book@file-bricks`, `strict_min_version: 128.0`) — required for Firefox AMO submission.
 - Added `tests/firefox-compat.test.mjs` with four manifest-level AMO-eligibility checks (gecko.id, strict_min_version, service_worker, no MV2 scripts).
 - Added `FIREFOX_AMO.md` documenting the Firefox compatibility matrix, API deltas, three runtime blockers (background.service_worker not supported, chrome.* callbacks-only, showDirectoryPicker unavailable), and an estimated migration effort of 2–3 working days.
@@ -19,6 +27,8 @@
 
 ### Fixed
 - XML-Entities in RSS- und OPML-Texten werden jetzt nur einmal dekodiert, damit bereits maskierte Entity-Texte nicht zu Markup werden.
+- **Bug E (rss.js):** Moved RSS detection before Atom detection; a `<feed>` tag appearing inside a CDATA description block no longer causes the feed to be mis-identified as Atom (returning 0 items instead of the correct RSS items).
+- **Bug F (opml.js):** `parseOPML` now trims leading and trailing whitespace from feed titles/text attributes, matching the existing behaviour for `xmlUrl` values; untrimmed titles would have produced bookmark folder names with stray spaces.
 - **Bug A (options.js):** OPML export now appends the download anchor to `document.body` before `.click()` and defers `revokeObjectURL` via `setTimeout` — fixes silent export failure in Firefox.
 - **Bug B (storage.js):** Added `withFeedLock` promise-chaining mutex; `upsertFeed` and `removeFeed` now serialize under this lock to prevent concurrent writes from losing data.
 - **Bug C (sw.js):** Added `_cycleInFlight` guard to `runUpdateCycle`; overlapping alarm or startup triggers now coalesce onto the running promise instead of spawning parallel cycles.
@@ -47,7 +57,9 @@
 - Removed an unused README screenshot reference after the asset was dropped.
 
 ### Verified
-- 51/51 tests pass (`npm test`), covering the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, OPML entity/URL normalization, hashing, package-content coverage, Firefox AMO eligibility, and Bugs A–D regression.
+- `npm run edge-preflight` creates `dist/RSS-BOOK-v1.1.2-edge.zip` and
+  `dist/EDGE_ADDONS_PREFLIGHT.md` for the manual Partner Center upload step.
+- 54/54 tests pass (`npm test`), covering the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, OPML entity/URL normalization, hashing, package-content coverage, Edge preflight, Firefox AMO eligibility, and Bugs A–D regression.
 - `npm run package` creates `dist/RSS-BOOK-v1.1.2-edge.zip` with the Manifest V3 runtime files plus license/privacy docs.
 
 ## [1.1.2] — 2026-04-30

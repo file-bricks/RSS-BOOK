@@ -68,6 +68,16 @@ test("parseOPML decodes XML entities once without double-decoding escaped entity
   ]);
 });
 
+test("parseOPML trimmt fuehrenden/trailing Whitespace aus Feed-Titeln", () => {
+  // Regression: xmlUrl wurde bereits getrimmt, der title/text-Wert aber nicht.
+  // Führende/trailing Leerzeichen im OPML-Attribut würden als Bookmark-Ordnertitel landen.
+  const feeds = parseOPML(
+    `<opml><body><outline text="  Padded Title  " xmlUrl="https://example.test/feed" /></body></opml>`
+  );
+  assert.equal(feeds.length, 1);
+  assert.equal(feeds[0].title, "Padded Title");
+});
+
 test("parseOPML trims whitespace from xmlUrl values", () => {
   const feeds = parseOPML(
     `<opml><body><outline text="Padded" xmlUrl="  https://padded.example/feed  " /></body></opml>`
