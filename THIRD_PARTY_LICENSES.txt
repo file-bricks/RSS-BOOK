@@ -1,0 +1,44 @@
+RSS-BOOK Third-Party License Inventory
+======================================
+
+Project: RSS-BOOK
+Project license: MIT, see LICENSE
+Inventory date: 2026-07-14
+
+Scope
+-----
+
+This inventory covers the repository-shipped browser extension runtime and the
+declared local test/build commands.
+
+Direct Package Dependencies
+---------------------------
+
+None.
+
+`package.json` declares no `dependencies`, no `optionalDependencies`, no
+`peerDependencies`, and an empty `devDependencies` object. The npm scripts use
+Node.js built-in modules only.
+
+Python Dependencies
+-------------------
+
+None.
+
+`requirements.txt` documents that RSS-BOOK ships as a browser extension and has
+no Python runtime dependencies for normal use.
+
+Browser Platform APIs
+---------------------
+
+RSS-BOOK uses browser-provided extension APIs such as bookmarks, storage,
+alarms, notifications, activeTab, scripting, and host permissions for configured
+feed URLs. These APIs are platform capabilities, not bundled third-party
+libraries.
+
+Distribution Note
+-----------------
+
+No third-party package license text is bundled because no third-party package is
+currently declared or vendored. If a future change adds npm, Python, browser, or
+vendored dependencies, update this file in the same change.
