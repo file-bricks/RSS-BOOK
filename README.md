@@ -1,5 +1,7 @@
 # RSS-BOOK
 
+[English](README.md) | [Deutsch](README_de.md)
+
 Bookmark-based RSS reader browser extension for Chrome, Edge, Brave and Vivaldi.
 
 RSS-BOOK is a privacy-first RSS and Atom feed reader for Chromium browsers.

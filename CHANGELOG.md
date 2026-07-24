@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+- Updated `llms.txt` Last-checked timestamp to 2026-07-25 and verified test metrics (56 unit tests passed).
+- Created German documentation landing page `README_de.md` and added language toggle navigation in `README.md`.
+
 ### Added
 - Added `npm run edge-preflight`, a dependency-free Microsoft Edge Add-ons
   preflight that rebuilds the upload ZIP, validates store icon/screenshots,
