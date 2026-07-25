@@ -18,6 +18,10 @@ no tracking.
 ![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
 ![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
 
+> [!NOTE]
+> For AI coding agents and LLM automation tools: See [`llms.txt`](llms.txt) for project architecture context, key entry points, and test instructions.
+
+
 ## Get RSS-BOOK
 
 - **Chrome Web Store:** [Install RSS-BOOK](https://chromewebstore.google.com/detail/rss-book/aednfjhookicnhcjhjifbaepglinbdli)
@@ -35,6 +39,7 @@ Brave or Vivaldi.
 | Review the code | `sw.js`, `lib/rss.js`, `lib/bookmarks.js`, `ui/options.js` |
 | Check privacy behavior | `PRIVACY_POLICY.md` and the permissions table below |
 | Build an Edge upload ZIP | `npm run package` |
+| Run Edge submission preflight | `npm run edge-preflight` |
 | Compare the power-user edition | `RSS-BOOKSTORE` for Native Messaging and folder sync |
 
 ## How it works
@@ -75,6 +80,7 @@ Install the published extension from the
 ### Edge Add-ons package
 
 Create the upload-ready ZIP with `npm run package`. The generated archive stays local under `dist/` and is intentionally ignored by git.
+Run `npm run edge-preflight` before upload to rebuild the ZIP, validate the store icon, screenshots, locale-derived listing text and privacy file, and write `dist/EDGE_ADDONS_PREFLIGHT.md`.
 
 ## Product Screenshots
 
@@ -98,7 +104,7 @@ Create the upload-ready ZIP with `npm run package`. The generated archive stays 
 
 ## Development
 
-RSS-BOOK has no bundling step. The repository includes 51 dependency-free Node tests for parser behavior, a 10-fixture RSS/Atom feed matrix, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, lifecycle diagnostics, light/dark theme CSS coverage, hashing, and Edge package contents:
+RSS-BOOK has no bundling step. The repository includes 53 dependency-free Node tests for parser behavior, a 10-fixture RSS/Atom feed matrix, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, lifecycle diagnostics, light/dark theme CSS coverage, hashing, Edge package contents, and Edge submission preflight:
 
 ```bash
 npm test
@@ -111,6 +117,14 @@ npm run package
 ```
 
 The package is written to `dist/RSS-BOOK-v<manifest version>-edge.zip`.
+For Microsoft Edge Add-ons submission prep, run:
+
+```bash
+npm run edge-preflight
+```
+
+This validates the local upload ZIP plus store-facing assets and writes a short
+manual-upload checklist under `dist/EDGE_ADDONS_PREFLIGHT.md`.
 
 GitHub Actions runs the same suite on pushes to `main` and pull requests.
 

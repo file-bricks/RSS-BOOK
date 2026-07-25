@@ -31,6 +31,7 @@ test("manifest references existing icons and locale files", () => {
   assert.equal(manifest.manifest_version, 3);
   assert.equal(manifest.background.type, "module");
   assert.equal(manifest.default_locale, "en");
+  assert.equal(Array.isArray(manifest.icons), false, "extension manifest icons must be a size-to-path object");
 
   for (const iconPath of Object.values(manifest.icons)) {
     assertExists(iconPath);

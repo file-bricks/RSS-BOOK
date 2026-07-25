@@ -198,6 +198,10 @@ test("options page exposes folder export button", () => {
   assert.match(html, /data-i18n="optionsExportAllFolders"/);
   assert.match(html, /id="refreshLifecycleBtn"/);
   assert.match(html, /id="lifecycleInfo"/);
+  assert.match(html, /id="feedUrl"/);
+  assert.match(html, /data-i18n-aria-label="optionsFeedUrlLabel"/);
+  assert.match(html, /data-i18n-aria-description="optionsFeedUrlDescription"/);
+  assert.match(html, /data-i18n-placeholder="optionsFeedUrlPlaceholder"/);
 });
 
 test("options folder export button writes bookmark .url files and shows count", async () => {

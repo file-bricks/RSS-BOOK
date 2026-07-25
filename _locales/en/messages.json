@@ -134,6 +134,15 @@
   "optionsAddFeed": {
     "message": "Add new feed"
   },
+  "optionsFeedUrlLabel": {
+    "message": "Feed URL"
+  },
+  "optionsFeedUrlDescription": {
+    "message": "Enter the full RSS or Atom feed URL to subscribe to it."
+  },
+  "optionsFeedUrlPlaceholder": {
+    "message": "https://example.com/feed.xml"
+  },
   "optionsAdd": {
     "message": "Add"
   },

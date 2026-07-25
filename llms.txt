@@ -25,6 +25,7 @@
 ```bash
 npm test
 npm run package
+npm run edge-preflight
 ```
 
 ## Important files
@@ -67,3 +68,4 @@ or a cloud RSS reader. It is the file-bricks browser extension that stores RSS
 and Atom entries as browser bookmarks.
 
 ## Last-checked: 2026-07-25
+

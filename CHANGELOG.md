@@ -13,6 +13,8 @@
   writes `dist/EDGE_ADDONS_PREFLIGHT.md`.
 - Added `BROWSER_SMOKE.md` with the manual Edge, Chrome, Brave and Vivaldi
   smoke matrix for pre-submission checks.
+- Added `tests/platform-scope.test.mjs` to keep RSS-BOOK browser-extension-first
+  and guard against accidental native desktop, mobile or PWA product scaffolds.
 - Added `tests/edge-preflight.test.mjs` covering report-writing and validation-only
   Edge preflight runs.
 - Added `browser_specific_settings.gecko` block to `manifest.json` (`id: rss-book@file-bricks`, `strict_min_version: 128.0`) — required for Firefox AMO submission.
@@ -63,7 +65,7 @@
 ### Verified
 - `npm run edge-preflight` creates `dist/RSS-BOOK-v1.1.2-edge.zip` and
   `dist/EDGE_ADDONS_PREFLIGHT.md` for the manual Partner Center upload step.
-- 54/54 tests pass (`npm test`), covering the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, OPML entity/URL normalization, hashing, package-content coverage, Edge preflight, Firefox AMO eligibility, and Bugs A–D regression.
+- 61/61 tests pass (`npm test`), covering the 10-feed parser matrix, CDATA cleanup, theme, service-worker scheduling, lifecycle diagnostics, OPML entity/URL normalization, hashing, package-content coverage, Edge preflight, Firefox AMO eligibility, platform-scope guards, and Bugs A–D regression.
 - `npm run package` creates `dist/RSS-BOOK-v1.1.2-edge.zip` with the Manifest V3 runtime files plus license/privacy docs.
 
 ## [1.1.2] — 2026-04-30
