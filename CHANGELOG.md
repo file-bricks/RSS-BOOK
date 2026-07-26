@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Changed
+- Documented the staged I18N expansion path in `AUFGABEN.txt`: keep English as the canonical default locale, pilot Spanish first, and gate `zh_CN`, `ja`, and `ru` behind a UI-width and notification-text review instead of blind bulk translation.
 - Updated `llms.txt` Last-checked timestamp to 2026-07-25 and verified test metrics (56 unit tests passed).
 - Created German documentation landing page `README_de.md` and added language toggle navigation in `README.md`.
 
