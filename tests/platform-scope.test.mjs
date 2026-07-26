@@ -10,7 +10,15 @@ function readText(relativePath) {
   return fs.readFileSync(path.join(rootDir, relativePath), "utf8");
 }
 
-test("porting plan keeps RSS-BOOK browser-extension first", () => {
+// Planungsdateien wie PORTIERUNGSPLAN.md und AUFGABEN.txt sind bewusst gitignored
+// und existieren im CI-Checkout nicht. Dort werden die zugehoerigen Checks
+// uebersprungen statt fehlzuschlagen; lokal bleiben sie voll wirksam.
+function localOnly(relativePath) {
+  if (fs.existsSync(path.join(rootDir, relativePath))) return false;
+  return `${relativePath} ist lokal-only (gitignored) und im Checkout nicht vorhanden`;
+}
+
+test("porting plan keeps RSS-BOOK browser-extension first", { skip: localOnly("PORTIERUNGSPLAN.md") }, () => {
   const plan = readText("PORTIERUNGSPLAN.md").toLowerCase();
 
   assert.match(plan, /browser-extension/);
@@ -47,7 +55,7 @@ test("project does not grow native, mobile, or pwa product scaffolds", () => {
   }
 });
 
-test("task list records the platform-scope gate as closed", () => {
+test("task list records the platform-scope gate as closed", { skip: localOnly("AUFGABEN.txt") }, () => {
   const tasks = readText("AUFGABEN.txt");
 
   assert.match(
