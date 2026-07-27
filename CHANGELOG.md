@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [1.1.3] - 2026-07-27
+
+### Added
+- Added Mermaid System Architecture diagrams in both `README.md` and `README_de.md` illustrating Service Worker lifecycle, RSS/Atom parser, caching engine, local bookmark engine, and Chromium cross-device sync.
+- Integrated `file-bricks` ecosystem badge and `open-bricks` umbrella organization badge into documentation headers.
+
+### Changed
+- Refreshed GFM alert callout (`> [!NOTE]`) for AI agent discovery in `README.md` and `README_de.md`.
+- Updated `llms.txt` verification timestamp to 2026-07-27.
+- Logged discoverability and marketing suggestions into `MARKETING-LOG.txt`.
+
+
 ### Changed
 - Refreshed `llms.txt`, `README.md` and `README_de.md` for Pfad B discoverability audit `[G 2026-07-27]`.
 - Added Mermaid System Architecture diagrams and test suite badges (`62 passed`) to English and German README documentation.

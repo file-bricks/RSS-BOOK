@@ -4,6 +4,14 @@
 
 Lesezeichen-basierte RSS-Reader Browser-Erweiterung für Chrome, Edge, Brave und Vivaldi.
 
+![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
+![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
+![Ecosystem: file-bricks](https://img.shields.io/badge/Ecosystem-file--bricks-4F46E5)
+![Umbrella: open-bricks](https://img.shields.io/badge/Umbrella-open--bricks-0EA5E9)
+![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/Tests-62%20passed-brightgreen)
+
 RSS-BOOK ist ein datenschutzfreundlicher RSS- und Atom-Feed-Reader für Chromium-Browser.
 Anstatt ein weiteres Konto oder eine Cloud-Datenbank anzulegen, speichert die Erweiterung Feed-Einträge direkt als
 Browser-Lesezeichen, sodass die Synchronisation von Chrome, Edge, Brave und Vivaldi sie automatisch auf alle Geräte überträgt.
@@ -11,14 +19,25 @@ Sie wurde für Leser entwickelt, die eine schlanke Chrome Web Store RSS-Erweiter
 
 ![RSS-BOOK](assets/social-preview.png)
 
-![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
-![License: MIT](https://img.shields.io/badge/License-MIT-green)
-![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
-![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
-![Tests](https://img.shields.io/badge/Tests-62%20passed-brightgreen)
-
 > [!NOTE]
-> Für KI-Entwicklungsagenten und LLM-Automatisierungstools: Siehe [`llms.txt`](llms.txt) für Projektarchitektur-Kontext, Einstiegspunkte und Testanweisungen.
+> Für KI-Entwicklungsagenten und LLM-Automationswerkzeuge: Siehe [`llms.txt`](llms.txt) für Systemarchitektur-Kontext, Einstiegspunkte und Testanweisungen.
+
+## Systemarchitektur
+
+```mermaid
+graph TD
+    A["Chromium Browser (Chrome / Edge / Brave / Vivaldi)"] --> B["Service Worker (sw.js)"]
+    B -->|Geplanter Alarm / Start| C["RSS & Atom Parser (lib/rss.js)"]
+    C -->|ETag & 304 Caching| D["Entfernte RSS / Atom Feed Quellen"]
+    C -->|Geparte Feed-Einträge| E["Bookmark Engine (lib/bookmarks.js)"]
+    E -->|Browser Bookmarks API| F["Lokale 'RSS' Lesezeichen-Ordner"]
+    F -->|Nativer Sync| G["Chromium Geräte-Synchronisation"]
+    
+    H["Erweiterungs-UI (ui/popup.html & ui/options.html)"] -->|Benutzeraktion / Discovery| B
+    H -->|OPML Import / Export & .url Export| E
+```
+
+>>>>>>> 9d50cd1 (docs(rss-book): discoverability, SEO & README architecture diagram audit)
 
 ## RSS-BOOK beziehen
 

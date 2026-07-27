@@ -4,6 +4,14 @@
 
 Bookmark-based RSS reader browser extension for Chrome, Edge, Brave and Vivaldi.
 
+![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
+![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
+![Ecosystem: file-bricks](https://img.shields.io/badge/Ecosystem-file--bricks-4F46E5)
+![Umbrella: open-bricks](https://img.shields.io/badge/Umbrella-open--bricks-0EA5E9)
+![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/Tests-62%20passed-brightgreen)
+
 RSS-BOOK is a privacy-first RSS and Atom feed reader for Chromium browsers.
 Instead of creating another account or cloud database, it saves feed entries as
 browser bookmarks so Chrome, Edge, Brave and Vivaldi sync can carry them across
@@ -13,14 +21,24 @@ no tracking.
 
 ![RSS-BOOK](assets/social-preview.png)
 
-![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
-![License: MIT](https://img.shields.io/badge/License-MIT-green)
-![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
-![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
-![Tests](https://img.shields.io/badge/Tests-62%20passed-brightgreen)
-
 > [!NOTE]
-> For AI coding agents and LLM automation tools: See [`llms.txt`](llms.txt) for project architecture context, key entry points, and test instructions.
+> For AI coding agents and LLM automation tools: See [`llms.txt`](llms.txt) for project architecture context, key entry points, search phrases, and test instructions.
+
+## System Architecture
+
+```mermaid
+graph TD
+    A["Chromium Browser (Chrome / Edge / Brave / Vivaldi)"] --> B["Service Worker (sw.js)"]
+    B -->|Scheduled Alarm / Startup| C["RSS & Atom Parser (lib/rss.js)"]
+    C -->|ETag & 304 Caching| D["Remote RSS / Atom Feed Sources"]
+    C -->|Parsed Feed Entries| E["Bookmark Engine (lib/bookmarks.js)"]
+    E -->|Browser Bookmarks API| F["Local 'RSS' Bookmark Folders"]
+    F -->|Native Sync| G["Chromium Cross-Device Sync"]
+    
+    H["Extension UI (ui/popup.html & ui/options.html)"] -->|User Action / Discovery| B
+    H -->|OPML Import / Export & .url Export| E
+```
+
 
 
 ## Get RSS-BOOK
