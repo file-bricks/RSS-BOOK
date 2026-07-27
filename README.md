@@ -17,6 +17,7 @@ no tracking.
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
 ![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/Tests-62%20passed-brightgreen)
 
 > [!NOTE]
 > For AI coding agents and LLM automation tools: See [`llms.txt`](llms.txt) for project architecture context, key entry points, and test instructions.
@@ -50,6 +51,15 @@ Brave or Vivaldi.
 4. Old entries are cleaned up based on your retention settings
 
 Your feeds live in your bookmarks — accessible everywhere your browser syncs, without a separate app.
+
+```mermaid
+graph TD
+    UI["Extension UI (popup / options)"] -->|User Actions / OPML| ST["MV3 Storage (lib/storage.js)"]
+    SW["Service Worker (sw.js)"] -->|Scheduled Alarms| RS["RSS/Atom Parser (lib/rss.js)"]
+    RS -->|Parsed Items| ST
+    SW -->|Manage Bookmarks| BM["Bookmarks API (lib/bookmarks.js)"]
+    BM -->|Sync Bookmarks| BROWSER["Chromium Bookmarks Sync"]
+```
 
 ## Features
 
@@ -104,7 +114,7 @@ Run `npm run edge-preflight` before upload to rebuild the ZIP, validate the stor
 
 ## Development
 
-RSS-BOOK has no bundling step. The repository includes 53 dependency-free Node tests for parser behavior, a 10-fixture RSS/Atom feed matrix, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, lifecycle diagnostics, light/dark theme CSS coverage, hashing, Edge package contents, and Edge submission preflight:
+RSS-BOOK has no bundling step. The repository includes 62 dependency-free Node tests for parser behavior, a 10-fixture RSS/Atom feed matrix, CDATA cleanup, OPML, storage, bookmark cleanup, feed discovery, folder export, store assets, service-worker scheduling, lifecycle diagnostics, light/dark theme CSS coverage, hashing, Edge package contents, and Edge submission preflight:
 
 ```bash
 npm test

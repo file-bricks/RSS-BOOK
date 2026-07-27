@@ -15,6 +15,10 @@ Sie wurde für Leser entwickelt, die eine schlanke Chrome Web Store RSS-Erweiter
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
 ![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/Tests-62%20passed-brightgreen)
+
+> [!NOTE]
+> Für KI-Entwicklungsagenten und LLM-Automatisierungstools: Siehe [`llms.txt`](llms.txt) für Projektarchitektur-Kontext, Einstiegspunkte und Testanweisungen.
 
 ## RSS-BOOK beziehen
 
@@ -43,6 +47,15 @@ RSS-BOOK kann auch durch Laden des entpackten Repositorys in Chrome, Edge, Brave
 
 Ihre Feeds leben in Ihren Lesezeichen – überall verfügbar, wo Ihr Browser synchronisiert, ganz ohne separate Konto-Anmeldung.
 
+```mermaid
+graph TD
+    UI["Erweiterungs-UI (popup / options)"] -->|Benutzeraktionen / OPML| ST["MV3 Storage (lib/storage.js)"]
+    SW["Service Worker (sw.js)"] -->|Geplante Alarme| RS["RSS/Atom Parser (lib/rss.js)"]
+    RS -->|Geparste Einträge| ST
+    SW -->|Erstelle/Verwalte Lesezeichen| BM["Lesezeichen API (lib/bookmarks.js)"]
+    BM -->|Synchronisiere Lesezeichen| BROWSER["Chromium Lesezeichen-Sync"]
+```
+
 ## Funktionen
 
 - **Manifest V3 nativ** – Entwickelt für moderne Chromium-Browser
@@ -57,7 +70,7 @@ Ihre Feeds leben in Ihren Lesezeichen – überall verfügbar, wo Ihr Browser sy
 
 ## Testabdeckung
 
-Die Testsuite umfasst 56 automatisierte Unit-Tests (`npm test`), die Feed-Parsing, OPML-Handling, Caching, Alarm-Scheduling und Lesezeichen-Deduplizierung abdecken.
+Die Testsuite umfasst 62 automatisierte Unit-Tests (`npm test`), die Feed-Parsing, OPML-Handling, Caching, Alarm-Scheduling und Lesezeichen-Deduplizierung abdecken.
 
 ## Lizenz
 

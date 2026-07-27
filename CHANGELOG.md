@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 ### Changed
+- Refreshed `llms.txt`, `README.md` and `README_de.md` for Pfad B discoverability audit `[G 2026-07-27]`.
+- Added Mermaid System Architecture diagrams and test suite badges (`62 passed`) to English and German README documentation.
+- Updated `llms.txt` Last-checked header timestamp to 2026-07-27 and verified 62/62 passing Node tests.
 - Documented the staged I18N expansion path in `AUFGABEN.txt`: keep English as the canonical default locale, pilot Spanish first, and gate `zh_CN`, `ja`, and `ru` behind a UI-width and notification-text review instead of blind bulk translation.
 - Updated `llms.txt` Last-checked timestamp to 2026-07-25 and verified test metrics (56 unit tests passed).
 - Created German documentation landing page `README_de.md` and added language toggle navigation in `README.md`.
