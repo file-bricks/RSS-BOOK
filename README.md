@@ -1,5 +1,8 @@
 # RSS-BOOK
 
+<img src="assets/banner.png" width="100%" alt="Rss Book banner">
+
+
 [English](README.md) | [Deutsch](README_de.md)
 
 Bookmark-based RSS reader browser extension for Chrome, Edge, Brave and Vivaldi.
