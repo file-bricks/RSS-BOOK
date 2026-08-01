@@ -37,8 +37,6 @@ graph TD
     H -->|OPML Import / Export & .url Export| E
 ```
 
->>>>>>> 9d50cd1 (docs(rss-book): discoverability, SEO & README architecture diagram audit)
-
 ## RSS-BOOK beziehen
 
 - **Chrome Web Store:** [RSS-BOOK installieren](https://chromewebstore.google.com/detail/rss-book/aednfjhookicnhcjhjifbaepglinbdli)
