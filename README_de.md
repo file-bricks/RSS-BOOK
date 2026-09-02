@@ -4,6 +4,14 @@
 
 Lesezeichen-basierte RSS-Reader Browser-Erweiterung für Chrome, Edge, Brave und Vivaldi.
 
+![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
+![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
+![Ecosystem: file-bricks](https://img.shields.io/badge/Ecosystem-file--bricks-4F46E5)
+![Umbrella: open-bricks](https://img.shields.io/badge/Umbrella-open--bricks-0EA5E9)
+![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/Tests-62%20passed-brightgreen)
+
 RSS-BOOK ist ein datenschutzfreundlicher RSS- und Atom-Feed-Reader für Chromium-Browser.
 Anstatt ein weiteres Konto oder eine Cloud-Datenbank anzulegen, speichert die Erweiterung Feed-Einträge direkt als
 Browser-Lesezeichen, sodass die Synchronisation von Chrome, Edge, Brave und Vivaldi sie automatisch auf alle Geräte überträgt.
@@ -11,10 +19,23 @@ Sie wurde für Leser entwickelt, die eine schlanke Chrome Web Store RSS-Erweiter
 
 ![RSS-BOOK](assets/social-preview.png)
 
-![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
-![License: MIT](https://img.shields.io/badge/License-MIT-green)
-![Privacy](https://img.shields.io/badge/Privacy-No%20Tracking-brightgreen)
-![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
+> [!NOTE]
+> Für KI-Entwicklungsagenten und LLM-Automationswerkzeuge: Siehe [`llms.txt`](llms.txt) für Systemarchitektur-Kontext, Einstiegspunkte und Testanweisungen.
+
+## Systemarchitektur
+
+```mermaid
+graph TD
+    A["Chromium Browser (Chrome / Edge / Brave / Vivaldi)"] --> B["Service Worker (sw.js)"]
+    B -->|Geplanter Alarm / Start| C["RSS & Atom Parser (lib/rss.js)"]
+    C -->|ETag & 304 Caching| D["Entfernte RSS / Atom Feed Quellen"]
+    C -->|Geparte Feed-Einträge| E["Bookmark Engine (lib/bookmarks.js)"]
+    E -->|Browser Bookmarks API| F["Lokale 'RSS' Lesezeichen-Ordner"]
+    F -->|Nativer Sync| G["Chromium Geräte-Synchronisation"]
+    
+    H["Erweiterungs-UI (ui/popup.html & ui/options.html)"] -->|Benutzeraktion / Discovery| B
+    H -->|OPML Import / Export & .url Export| E
+```
 
 ## RSS-BOOK beziehen
 
@@ -43,6 +64,15 @@ RSS-BOOK kann auch durch Laden des entpackten Repositorys in Chrome, Edge, Brave
 
 Ihre Feeds leben in Ihren Lesezeichen – überall verfügbar, wo Ihr Browser synchronisiert, ganz ohne separate Konto-Anmeldung.
 
+```mermaid
+graph TD
+    UI["Erweiterungs-UI (popup / options)"] -->|Benutzeraktionen / OPML| ST["MV3 Storage (lib/storage.js)"]
+    SW["Service Worker (sw.js)"] -->|Geplante Alarme| RS["RSS/Atom Parser (lib/rss.js)"]
+    RS -->|Geparste Einträge| ST
+    SW -->|Erstelle/Verwalte Lesezeichen| BM["Lesezeichen API (lib/bookmarks.js)"]
+    BM -->|Synchronisiere Lesezeichen| BROWSER["Chromium Lesezeichen-Sync"]
+```
+
 ## Funktionen
 
 - **Manifest V3 nativ** – Entwickelt für moderne Chromium-Browser
@@ -57,7 +87,7 @@ Ihre Feeds leben in Ihren Lesezeichen – überall verfügbar, wo Ihr Browser sy
 
 ## Testabdeckung
 
-Die Testsuite umfasst 56 automatisierte Unit-Tests (`npm test`), die Feed-Parsing, OPML-Handling, Caching, Alarm-Scheduling und Lesezeichen-Deduplizierung abdecken.
+Die Testsuite umfasst 62 automatisierte Unit-Tests (`npm test`), die Feed-Parsing, OPML-Handling, Caching, Alarm-Scheduling und Lesezeichen-Deduplizierung abdecken.
 
 ## Lizenz
 
