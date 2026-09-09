@@ -37,8 +37,73 @@ test("manifest references existing icons and locale files", () => {
     assertExists(iconPath);
   }
 
-  assertExists("_locales/en/messages.json");
-  assertExists("_locales/de/messages.json");
+  const localeDirs = fs
+    .readdirSync(path.join(rootDir, "_locales"), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+
+  assert.ok(localeDirs.includes("en"), "en locale directory must exist");
+  assert.ok(localeDirs.includes("de"), "de locale directory must exist");
+  assert.ok(localeDirs.includes("es"), "es locale directory must exist");
+
+  for (const locale of localeDirs) {
+    assertExists(`_locales/${locale}/messages.json`);
+  }
+});
+
+test("all bundled locales provide the canonical message keys and placeholders", () => {
+  const englishMessages = readJson("_locales/en/messages.json");
+  const englishKeys = Object.keys(englishMessages).sort();
+
+  const localeDirs = fs
+    .readdirSync(path.join(rootDir, "_locales"), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+
+  assert.ok(localeDirs.length >= 3, "at least en, de, and es locales must be present");
+
+  for (const locale of localeDirs) {
+    const messages = readJson(`_locales/${locale}/messages.json`);
+    const keys = Object.keys(messages).sort();
+
+    assert.deepEqual(keys, englishKeys, `${locale} must match English message keys`);
+
+    for (const key of englishKeys) {
+      const enItem = englishMessages[key];
+      const locItem = messages[key];
+
+      assert.equal(
+        typeof locItem.message,
+        "string",
+        `${locale}.${key}.message must be a string`
+      );
+      assert.ok(
+        locItem.message.trim().length > 0,
+        `${locale}.${key}.message must not be empty`
+      );
+
+      if (enItem.placeholders) {
+        assert.ok(
+          locItem.placeholders,
+          `${locale}.${key} must declare placeholders matching English`
+        );
+        assert.deepEqual(
+          Object.keys(locItem.placeholders).sort(),
+          Object.keys(enItem.placeholders).sort(),
+          `${locale}.${key} placeholder keys must match English`
+        );
+        for (const ph of Object.keys(enItem.placeholders)) {
+          assert.equal(
+            locItem.placeholders[ph]?.content,
+            enItem.placeholders[ph]?.content,
+            `${locale}.${key}.placeholders.${ph}.content must match English`
+          );
+        }
+      }
+    }
+  }
 });
 
 test("store icon and screenshot assets have release-ready dimensions", () => {

@@ -18,6 +18,7 @@ test("edge preflight validates upload package and store assets", async () => {
 
     assert.equal(result.status, "OK");
     assert.equal(result.version, "1.1.2");
+    assert.deepEqual(result.locales.sort(), ["de", "en", "es"]);
     assert.equal(result.listing.name, "RSS-BOOK");
     assert.match(result.listing.description, /bookmarks/i);
     assert.equal(result.assets.storeIcon.width, 300);
@@ -43,6 +44,7 @@ test("edge preflight can run as validation without writing report", async () => 
     });
 
     assert.equal(result.status, "OK");
+    assert.deepEqual(result.locales.sort(), ["de", "en", "es"]);
     assert.equal(fs.existsSync(path.join(tempDir, "EDGE_ADDONS_PREFLIGHT.md")), false);
     assert.equal(fs.existsSync(result.package.path), true);
   } finally {

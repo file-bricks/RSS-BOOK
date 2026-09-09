@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Added
+- Integrated Spanish locale (`_locales/es/messages.json`) covering all 65 canonical message keys.
+- Added automated multi-locale key and placeholder parity guard in `tests/manifest-assets.test.mjs` verifying that all bundled locales carry identical message keys and matching placeholder syntax.
+- Added bit-for-bit packaging integrity tests in `tests/package.test.mjs` ensuring all discovered locale bundles are preserved without corruption or omissions in the Edge upload ZIP.
+
+### Changed
+- Strengthened `scripts/package-extension.mjs` to dynamically validate that every locale directory found on disk is present in package entries before archive creation.
+- Enhanced `scripts/edge-preflight.mjs` with `validateLocales` to verify multi-locale parity and record bundled locales in `EDGE_ADDONS_PREFLIGHT.md`.
+- Expanded `tests/edge-preflight.test.mjs` to assert multi-locale validation and listing.
+
 ## [1.1.3] - 2026-07-27
 
 ### Added

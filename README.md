@@ -161,8 +161,8 @@ GitHub Actions runs the same suite on pushes to `main` and pull requests.
 
 ## Localization
 
-The default UI is English and the bundled German locale lives in `_locales/de/messages.json`.
-German user-facing strings use real Umlaute such as ä, ö, ü, and ß so browser-store text and extension UI stay readable without JSON escape noise.
+The default UI is English, bundled German lives in `_locales/de/messages.json`, and Spanish in `_locales/es/messages.json`.
+German user-facing strings use real Umlaute such as ä, ö, ü, and ß so browser-store text and extension UI stay readable without JSON escape noise. Automated tests enforce 100% key parity and placeholder alignment across all bundled locales.
 
 ## Permissions
 

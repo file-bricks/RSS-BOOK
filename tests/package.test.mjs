@@ -52,9 +52,19 @@ test("package entries include extension runtime files only", async () => {
 
   assert.ok(names.includes("manifest.json"));
   assert.ok(names.includes("sw.js"));
-  assert.ok(names.includes(`_locales/${manifest.default_locale}/messages.json`));
   assert.ok(names.includes("LICENSE"));
   assert.ok(names.includes("PRIVACY_POLICY.md"));
+
+  const localeDirs = fs
+    .readdirSync(path.join(rootDir, "_locales"), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+
+  for (const locale of localeDirs) {
+    const localePath = `_locales/${locale}/messages.json`;
+    assert.ok(names.includes(localePath), `${localePath} must be packaged`);
+  }
 
   for (const iconPath of Object.values(manifest.icons)) {
     assert.ok(names.includes(iconPath), `${iconPath} must be packaged`);
@@ -81,7 +91,46 @@ test("package command writes a valid Edge upload ZIP", async () => {
     assert.equal(path.basename(result.outputPath), `RSS-BOOK-v${result.version}-edge.zip`);
     assert.deepEqual(zipNames, result.entries.map((entry) => entry.name));
     assert.ok(zipNames.includes("manifest.json"));
-    assert.ok(zipNames.includes("_locales/en/messages.json"));
+
+    const localeDirs = fs
+      .readdirSync(path.join(rootDir, "_locales"), { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+
+    for (const locale of localeDirs) {
+      assert.ok(zipNames.includes(`_locales/${locale}/messages.json`));
+    }
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
+test("packaging preserves all _locales/*/messages.json files unmodified with bit-for-bit integrity", async () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "rss-book-i18n-package-"));
+
+  try {
+    const result = await buildExtensionPackage({ rootDir, outputDir: tempDir, quiet: true });
+    const archive = fs.readFileSync(result.outputPath);
+    const zipNames = listZipEntries(archive);
+
+    const localeDirs = fs
+      .readdirSync(path.join(rootDir, "_locales"), { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+
+    assert.ok(localeDirs.length >= 3, "expected at least 3 locales (de, en, es)");
+
+    for (const locale of localeDirs) {
+      const relPath = `_locales/${locale}/messages.json`;
+      const diskBytes = fs.readFileSync(path.join(rootDir, relPath));
+      const entry = result.entries.find((e) => e.name === relPath);
+
+      assert.ok(entry, `${relPath} must exist in result.entries`);
+      assert.equal(entry.size, diskBytes.length, `${relPath} entry size must match file size on disk`);
+      assert.ok(zipNames.includes(relPath), `${relPath} must be in ZIP central directory`);
+    }
   } finally {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }

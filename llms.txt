@@ -36,7 +36,7 @@ npm run edge-preflight
 - `lib/rss.js` - RSS/Atom parser.
 - `lib/bookmarks.js` - bookmark folder and item management.
 - `ui/popup.html` / `ui/options.html` - extension interface.
-- `_locales/en/messages.json` and `_locales/de/messages.json` - UI strings.
+- `_locales/` (`en`, `de`, `es`) - UI strings with automated key-parity and placeholder validation.
 
 ## Audience
 

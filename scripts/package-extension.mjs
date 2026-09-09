@@ -119,6 +119,21 @@ async function validatePackageEntries(rootDir, entries) {
     throw new Error(`Default locale is missing from package: ${manifest.default_locale}`);
   }
 
+  const localesDir = path.join(rootDir, "_locales");
+  try {
+    const localeEntries = await fs.readdir(localesDir, { withFileTypes: true });
+    for (const entry of localeEntries) {
+      if (entry.isDirectory()) {
+        const localeFile = `_locales/${entry.name}/messages.json`;
+        if (!names.has(localeFile)) {
+          throw new Error(`Locale file is missing from package: ${localeFile}`);
+        }
+      }
+    }
+  } catch (error) {
+    if (error.code !== "ENOENT") throw error;
+  }
+
   return { manifest, packageJson };
 }
 

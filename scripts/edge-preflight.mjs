@@ -62,6 +62,32 @@ async function collectStoreScreenshots(rootDir) {
   return checked;
 }
 
+async function validateLocales(rootDir, defaultLocale) {
+  const localesDir = path.join(rootDir, "_locales");
+  const entries = await fs.readdir(localesDir, { withFileTypes: true });
+  const localeDirs = entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
+
+  if (!localeDirs.includes(defaultLocale)) {
+    throw new Error(`Default locale "${defaultLocale}" missing from _locales.`);
+  }
+
+  const defaultMessages = await readJson(rootDir, `_locales/${defaultLocale}/messages.json`);
+  const canonicalKeys = Object.keys(defaultMessages).sort();
+
+  for (const locale of localeDirs) {
+    const locMessages = await readJson(rootDir, `_locales/${locale}/messages.json`);
+    const locKeys = Object.keys(locMessages).sort();
+    if (canonicalKeys.length !== locKeys.length || !canonicalKeys.every((k, i) => k === locKeys[i])) {
+      throw new Error(`Locale "${locale}" message keys do not match default locale "${defaultLocale}".`);
+    }
+  }
+
+  return localeDirs;
+}
+
 function renderReport(result) {
   const lines = [
     "# RSS-BOOK Edge Add-ons Preflight",
@@ -76,6 +102,7 @@ function renderReport(result) {
     "",
     `Name: ${result.listing.name}`,
     `Short description: ${result.listing.description}`,
+    `Locales: ${result.locales.join(", ")} (${result.locales.length})`,
     `Privacy file: ${result.listing.privacyPolicy}`,
     "",
     "## Store Assets",
@@ -104,6 +131,7 @@ export async function runEdgePreflight({
   const manifest = await readJson(rootDir, "manifest.json");
   const packageJson = await readJson(rootDir, "package.json");
   const messages = await readJson(rootDir, `_locales/${manifest.default_locale}/messages.json`);
+  const locales = await validateLocales(rootDir, manifest.default_locale);
 
   if (manifest.manifest_version !== 3) {
     throw new Error("Edge preflight requires Manifest V3.");
@@ -124,6 +152,7 @@ export async function runEdgePreflight({
   const result = {
     status: "OK",
     version: manifest.version,
+    locales,
     package: {
       path: packageResult.outputPath,
       relativePath: path.relative(rootDir, packageResult.outputPath).split(path.sep).join("/"),
