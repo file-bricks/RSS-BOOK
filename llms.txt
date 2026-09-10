@@ -1,5 +1,5 @@
 # RSS-BOOK
-Last-checked: 2026-07-27
+Last-checked: 2026-09-10
 
 > RSS-BOOK is a privacy-first Manifest V3 browser extension for Chrome, Edge,
 > Brave and Vivaldi. It turns RSS and Atom feed entries into browser bookmarks

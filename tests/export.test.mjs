@@ -1,7 +1,7 @@
 import { afterEach, test } from "node:test";
 import assert from "node:assert/strict";
 
-import { exportAllFeedsToFolder, exportFeedToFolder } from "../lib/export.js";
+import { exportAllFeedsToFolder, exportFeedToFolder, sanitizeFilename } from "../lib/export.js";
 
 afterEach(() => {
   delete globalThis.chrome;
@@ -108,5 +108,62 @@ test("exports one feed folder and reports empty folders", async () => {
   await assert.rejects(
     () => exportFeedToFolder("empty"),
     /No bookmarks to export/
+  );
+});
+
+test("sanitizeFilename handles Windows reserved device names safely", () => {
+  assert.equal(sanitizeFilename("CON"), "_CON");
+  assert.equal(sanitizeFilename("con"), "_con");
+  assert.equal(sanitizeFilename("PRN"), "_PRN");
+  assert.equal(sanitizeFilename("AUX"), "_AUX");
+  assert.equal(sanitizeFilename("aux"), "_aux");
+  assert.equal(sanitizeFilename("NUL"), "_NUL");
+  assert.equal(sanitizeFilename("COM1"), "_COM1");
+  assert.equal(sanitizeFilename("com9"), "_com9");
+  assert.equal(sanitizeFilename("LPT1"), "_LPT1");
+  assert.equal(sanitizeFilename("lpt5"), "_lpt5");
+});
+
+test("sanitizeFilename strips illegal characters, trailing dots, trailing spaces, and control characters", () => {
+  assert.equal(sanitizeFilename("Tech Review..."), "Tech Review");
+  assert.equal(sanitizeFilename("Feed with trailing spaces   "), "Feed with trailing spaces");
+  assert.equal(sanitizeFilename("Folder: Sub / Section * ? < > | \""), "Folder_ Sub _ Section _ _ _ _ _ _");
+  assert.equal(sanitizeFilename("Line\x00Break\x1fTest"), "Line_Break_Test");
+  assert.equal(sanitizeFilename("..."), "unnamed");
+  assert.equal(sanitizeFilename(""), "unnamed");
+  assert.equal(sanitizeFilename(null), "unnamed");
+});
+
+test("exports feeds with reserved names and OneDrive-critical characters without filesystem collisions", async () => {
+  const writes = installExportMocks({
+    resFolder: [
+      { title: "CON", url: "https://example.test/con" },
+      { title: "Review...", url: "https://example.test/review" }
+    ]
+  });
+
+  const exported = await exportAllFeedsToFolder([
+    { title: "AUX", bookmarkFolderId: "resFolder" }
+  ]);
+
+  assert.equal(exported, 2);
+  assert.deepEqual(writes, [
+    {
+      folderName: "_AUX",
+      fileName: "_CON.url",
+      content: "[InternetShortcut]\r\nURL=https://example.test/con\r\n"
+    },
+    {
+      folderName: "_AUX",
+      fileName: "Review.url",
+      content: "[InternetShortcut]\r\nURL=https://example.test/review\r\n"
+    }
+  ]);
+});
+
+test("exportAllFeedsToFolder throws when no feeds have bookmark folders", async () => {
+  await assert.rejects(
+    () => exportAllFeedsToFolder([{ title: "No Folder Feed" }]),
+    /No feeds with bookmark folders/
   );
 });

@@ -6,11 +6,15 @@
 - Integrated Spanish locale (`_locales/es/messages.json`) covering all 65 canonical message keys.
 - Added automated multi-locale key and placeholder parity guard in `tests/manifest-assets.test.mjs` verifying that all bundled locales carry identical message keys and matching placeholder syntax.
 - Added bit-for-bit packaging integrity tests in `tests/package.test.mjs` ensuring all discovered locale bundles are preserved without corruption or omissions in the Edge upload ZIP.
+- Added automated OPML fixtures and import test coverage for real-world Feedly and Thunderbird exports (`tests/opml.test.mjs`), including nested category containers, multi-line outlines, `version="RSS"`, CRLF line endings, and HTML entities.
+- Added comprehensive filename and folder sanitization tests in `tests/export.test.mjs` verifying Windows reserved names (`CON`, `PRN`, `AUX`, `NUL`, `COM1-9`, `LPT1-9`), trailing dots/spaces, control characters, and OneDrive restrictions.
 
 ### Changed
 - Strengthened `scripts/package-extension.mjs` to dynamically validate that every locale directory found on disk is present in package entries before archive creation.
 - Enhanced `scripts/edge-preflight.mjs` with `validateLocales` to verify multi-locale parity and record bundled locales in `EDGE_ADDONS_PREFLIGHT.md`.
 - Expanded `tests/edge-preflight.test.mjs` to assert multi-locale validation and listing.
+- Hardened `parseOPML` in `lib/opml.js` with UTF-8 BOM stripping, title-to-text fallback when `title=""`, and expanded HTML entity decoding (`&nbsp;`, `&copy;`, umlauts, quotes, accents).
+- Hardened `sanitizeFilename` in `lib/export.js` against Windows reserved device names, control characters, trailing dots/spaces, and OneDrive path restrictions, exporting the helper for direct testing.
 
 ## [1.1.3] - 2026-07-27
 

@@ -85,3 +85,92 @@ test("parseOPML trims whitespace from xmlUrl values", () => {
   assert.equal(feeds.length, 1);
   assert.equal(feeds[0].url, "https://padded.example/feed");
 });
+
+test("parseOPML falls back to text attribute when title attribute is present but empty", () => {
+  const feeds = parseOPML(
+    `<opml><body>
+      <outline title="" text="Fallback Title" xmlUrl="https://fallback.example/feed" />
+    </body></opml>`
+  );
+  assert.equal(feeds.length, 1);
+  assert.equal(feeds[0].title, "Fallback Title");
+  assert.equal(feeds[0].url, "https://fallback.example/feed");
+});
+
+test("parseOPML strips UTF-8 BOM if present", () => {
+  const bomOpml = "\uFEFF<opml version=\"2.0\"><body><outline text=\"BOM Feed\" xmlUrl=\"https://bom.example/feed\" /></body></opml>";
+  const feeds = parseOPML(bomOpml);
+  assert.equal(feeds.length, 1);
+  assert.equal(feeds[0].title, "BOM Feed");
+  assert.equal(feeds[0].url, "https://bom.example/feed");
+});
+
+test("parses real-world Feedly OPML export with nested categories and multi-line outlines", () => {
+  const feedlyExport = `<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+  <head>
+    <title>feedly Cloud OPML Export</title>
+  </head>
+  <body>
+    <outline text="Technology" title="Technology">
+      <outline
+        type="rss"
+        text="Ars Technica"
+        title="Ars Technica"
+        xmlUrl="https://feeds.arstechnica.com/arstechnica/index"
+        htmlUrl="https://arstechnica.com" />
+      <outline
+        type="rss"
+        htmlUrl="https://news.ycombinator.com"
+        xmlUrl="https://news.ycombinator.com/rss"
+        text="Hacker News"
+        title="Hacker News" />
+    </outline>
+    <outline text="Science &amp; Nature" title="Science &amp; Nature">
+      <outline
+        type="rss"
+        text="Nature News &amp; Comment"
+        title="Nature News &amp; Comment"
+        xmlUrl="https://www.nature.com/nature.rss"
+        htmlUrl="https://www.nature.com" />
+    </outline>
+  </body>
+</opml>`;
+
+  const feeds = parseOPML(feedlyExport);
+  assert.equal(feeds.length, 3);
+  assert.deepEqual(feeds, [
+    { url: "https://feeds.arstechnica.com/arstechnica/index", title: "Ars Technica" },
+    { url: "https://news.ycombinator.com/rss", title: "Hacker News" },
+    { url: "https://www.nature.com/nature.rss", title: "Nature News & Comment" }
+  ]);
+});
+
+test("parses real-world Thunderbird OPML export with CRLF line endings and entities", () => {
+  const thunderbirdExport = "<?xml version=\"1.0\"?>\r\n" +
+    "<opml version=\"1.0\">\r\n" +
+    "  <head>\r\n" +
+    "    <title>Thunderbird Feeds</title>\r\n" +
+    "  </head>\r\n" +
+    "  <body>\r\n" +
+    "    <outline title=\"Nachrichten\" text=\"Nachrichten\">\r\n" +
+    "      <outline type=\"rss\" version=\"RSS\" text=\"Tagesschau &amp; Aktuelles\" title=\"Tagesschau &amp; Aktuelles\" xmlUrl=\"https://www.tagesschau.de/xml/rss2/\" htmlUrl=\"https://www.tagesschau.de/\" />\r\n" +
+    "      <outline type=\"rss\" version=\"RSS2\" text=\"Heise &Ouml;ffentlichkeit\" title=\"Heise &#214;ffentlichkeit\" xmlUrl=\"https://www.heise.de/rss/heise-atom.xml\" htmlUrl=\"https://www.heise.de/\" />\r\n" +
+    "    </outline>\r\n" +
+    "  </body>\r\n" +
+    "</opml>\r\n";
+
+  const feeds = parseOPML(thunderbirdExport);
+  assert.equal(feeds.length, 2);
+  assert.equal(feeds[0].url, "https://www.tagesschau.de/xml/rss2/");
+  assert.equal(feeds[0].title, "Tagesschau & Aktuelles");
+  assert.equal(feeds[1].url, "https://www.heise.de/rss/heise-atom.xml");
+  assert.equal(feeds[1].title, "Heise Öffentlichkeit");
+});
+
+test("parseOPML handles empty or non-string inputs gracefully", () => {
+  assert.deepEqual(parseOPML(""), []);
+  assert.deepEqual(parseOPML(null), []);
+  assert.deepEqual(parseOPML(undefined), []);
+  assert.deepEqual(parseOPML("<opml><body><outline text='No Feeds Here'/></body></opml>"), []);
+});
