@@ -3,6 +3,18 @@
 ## [Unreleased]
 
 ### Added
+- Added synchronized 18-point quick navigation with reciprocal HTML anchor parity (`<a id="..."></a>`) across `README.md` and `README_de.md`.
+- Added Target Personas (`[PERSONA-01]` through `[PERSONA-04]`) and high-intent search query blocks for SEO discoverability.
+- Added 10-dimension comparative matrix evaluating RSS-BOOK against 4 alternative architectures mapped to system invariants (`INV-LOCAL-01` through `INV-LOCAL-10`).
+- Added Dual Mermaid diagrams: System Architecture Topology (`flowchart TD`) and Feed Update & Bookmark Synchronization Lifecycle Sequence Diagram (`sequenceDiagram` with `autonumber` and zero statement semicolons).
+- Added German statutory liability notice (§ 521 BGB Gefälligkeitsrecht) in both English and German README documentation.
+- Created repository-level `MARKETING-LOG.txt` detailing Pfad B discoverability audit Stand 2026-09-18.
+- Added automated contract test suite `tests/metadata.test.mjs` verifying navigation parity, personas, comparative matrix, liability clause, dual mermaid diagrams, and `llms.txt` integrity (suite total: 80 passed tests, 100% green).
+
+### Changed
+- Cleaned up `llms.txt`: eliminated leftover git merge conflict markers, updated Last-checked timestamp to 2026-09-18, and synchronized architecture index and target personas.
+- Re-audited `THIRD_PARTY_LICENSES.txt` with updated inventory date 2026-09-18 and verified zero external dependencies.
+- Updated test suite badges in `README.md` and `README_de.md` to reflect 80 passed tests.
 - Integrated Spanish locale (`_locales/es/messages.json`) covering all 65 canonical message keys.
 - Added automated multi-locale key and placeholder parity guard in `tests/manifest-assets.test.mjs` verifying that all bundled locales carry identical message keys and matching placeholder syntax.
 - Added bit-for-bit packaging integrity tests in `tests/package.test.mjs` ensuring all discovered locale bundles are preserved without corruption or omissions in the Edge upload ZIP.

@@ -1,5 +1,5 @@
 # RSS-BOOK
-Last-checked: 2026-09-10
+Last-checked: 2026-09-18
 
 > RSS-BOOK is a privacy-first Manifest V3 browser extension for Chrome, Edge,
 > Brave and Vivaldi. It turns RSS and Atom feed entries into browser bookmarks
@@ -11,6 +11,8 @@ Last-checked: 2026-09-10
 - Chrome Web Store: https://chromewebstore.google.com/detail/rss-book/aednfjhookicnhcjhjifbaepglinbdli
 - Releases: https://github.com/file-bricks/RSS-BOOK/releases
 - Privacy policy: https://github.com/file-bricks/RSS-BOOK/blob/main/PRIVACY_POLICY.md
+- Ecosystem: https://github.com/file-bricks
+- Umbrella: https://github.com/open-bricks
 
 ## What it does
 
@@ -20,6 +22,7 @@ Last-checked: 2026-09-10
 - Avoids accounts, telemetry, analytics and third-party proxy services.
 - Runs as a dependency-free Chromium Manifest V3 extension.
 - Publishes a Chrome Web Store listing and a GitHub release ZIP for sideloading.
+- Exports bookmark feeds as Windows/OneDrive `.url` shortcut files.
 
 ## Developer commands
 
@@ -29,22 +32,45 @@ npm run package
 npm run edge-preflight
 ```
 
+## Quick Navigation Index
+
+1. System Architecture (`#1-system-architecture` / `#1-systemarchitektur`)
+2. Core Mission & Key Benefits (`#2-core-mission--key-benefits` / `#2-kernmission--hauptvorteile`)
+3. Target Personas & Use Cases (`#3-target-personas--use-cases` / `#3-zielgruppen-personas--anwendungsfaelle`)
+4. High-Intent Search Queries & SEO (`#4-high-intent-search-queries--seo` / `#4-suchanfragen--seo`)
+5. Comparative Matrix vs Alternatives (`#5-comparative-matrix--alternatives` / `#5-vergleichsmatrix--alternativen`)
+6. Installation & Browser Stores (`#6-installation--browser-stores` / `#6-installation--browser-stores`)
+7. Quick Start & How It Works (`#7-quick-start--how-it-works` / `#7-schnelleinstieg--funktionsweise`)
+8. Features & Capabilities (`#8-features--capabilities` / `#8-funktionen--merkmale`)
+9. Product Screenshots (`#9-product-screenshots` / `#9-produkt-screenshots`)
+10. Feed Discovery & OPML Portability (`#10-feed-discovery--opml-portability` / `#10-feed-erkennung--opml-portabilitaet`)
+11. Bookmark Management & Retention (`#11-bookmark-management--retention` / `#11-lesezeichen-verwaltung--aufbewahrung`)
+12. Permissions & Privacy Policy (`#12-permissions--privacy-policy` / `#12-berechtigungen--datenschutz`)
+13. Project Structure (`#13-project-structure` / `#13-projektstruktur`)
+14. Development & Test Suite (`#14-development--test-suite` / `#14-entwicklung--testsuite`)
+15. Packaging & Edge Preflight (`#15-packaging--edge-preflight` / `#15-paketierung--edge-preflight`)
+16. Internationalization & Locales (`#16-internationalization--locales` / `#16-internationalisierung--lokalisierung`)
+17. Sibling Projects & Ecosystem (`#17-sibling-projects--ecosystem` / `#17-geschwisterprojekte--oekosystem`)
+18. License & Statutory Liability (`#18-license--statutory-liability` / `#18-lizenz--gesetzliche-haftung`)
+
+## Target Personas
+
+- `[PERSONA-01]` Privacy-Conscious News & Tech Readers (no-account RSS without cloud profiling)
+- `[PERSONA-02]` Chromium Multi-Device Power Users (Chrome, Edge, Brave, Vivaldi bookmark sync across machines)
+- `[PERSONA-03]` Extension & Local-First Software Engineers (clean Manifest V3, alarms, storage, 0 runtime dependencies)
+- `[PERSONA-04]` Information Curators & Research Archivists (OPML 2.0 and Windows/OneDrive `.url` folder exports)
+
 ## Important files
 
 - `manifest.json` - Chromium Manifest V3 extension metadata.
 - `sw.js` - service worker for scheduled feed updates.
 - `lib/rss.js` - RSS/Atom parser.
 - `lib/bookmarks.js` - bookmark folder and item management.
+- `lib/opml.js` - OPML import/export.
+- `lib/export.js` - Windows `.url` shortcut export.
 - `ui/popup.html` / `ui/options.html` - extension interface.
 - `_locales/` (`en`, `de`, `es`) - UI strings with automated key-parity and placeholder validation.
-
-## Audience
-
-- Browser extension developers and power users looking for a Manifest V3 RSS reader without a cloud account.
-- Chrome, Edge, Brave and Vivaldi users who want feeds to live in their browser bookmarks for cross-device sync.
-- Privacy-conscious readers who need a no-tracking, no-telemetry feed reader.
-- Developers evaluating browser-extension architecture patterns (service workers, alarms, MV3 storage).
-- AI assistants (Claude, Codex, Gemini) helping users find, install or extend bookmark-based RSS tools.
+- `tests/` - Node built-in test suite (80 automated tests, 100% green).
 
 ## Search Phrases
 
@@ -67,9 +93,3 @@ file-bricks RSS-BOOK GitHub
 RSS-BOOK is not an RSS feed generator for books, an icon pack, a GitBook plugin,
 or a cloud RSS reader. It is the file-bricks browser extension that stores RSS
 and Atom entries as browser bookmarks.
-
-<<<<<<< HEAD
-=======
-## Last-checked: 2026-07-27
->>>>>>> 9d50cd1 (docs(rss-book): discoverability, SEO & README architecture diagram audit)
-

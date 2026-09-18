@@ -1,0 +1,84 @@
+# RSS-BOOK Marketing & Discoverability Log
+
+Project: RSS-BOOK (file-bricks/RSS-BOOK)
+Canonical Path: C:\_Local_DEV\repos\RSS-BOOK
+License: MIT
+Primary Scope: Chromium Browser Extension (Chrome Web Store, Edge Add-ons, Brave, Vivaldi)
+
+---
+
+## 2026-09-18 — Pfad B Discoverability, Visual Architecture & Bilingual Navigation Audit
+
+- **Audit Trigger:** Pfad B Repository-Discoverability, zweisprachige README-Architektur, Badges und Sequenzdiagramme (`[GITHUBBOT_ONE_REPO_MARKETING_AND_DESIGN]`).
+- **Target Selection:** Selected via `_tools/repo_radar.py candidates --path b`. 198h silence (>24h cooldown), 0 locks (`lock_status.py`: UNLOCKED), 100% clean git working tree on `main`.
+
+### 1. Target Personas & High-Intent Alignment
+
+1. **`[PERSONA-01]` Privacy-Conscious News & Tech Readers:**
+   - *Pain Point:* Reluctance to create yet another third-party cloud aggregator account (Feedly, Inoreader, NewsBlur) that tracks reading habits, injects promoted posts, or subjects reading feeds to server-side telemetry.
+   - *Solution:* Direct browser-internal storage into Chromium bookmarks. 0 external network egress beyond direct feed fetches; zero telemetry, zero analytics.
+2. **`[PERSONA-02]` Chromium Multi-Device Power Users:**
+   - *Pain Point:* Need feed subscriptions synchronized across workstations, home PCs, and laptops without maintaining self-hosted servers (FreshRSS, Miniflux) or paying for cloud sync tiers.
+   - *Solution:* Leverages the native cross-device bookmark synchronization built directly into Google Chrome, Microsoft Edge, Brave Sync, and Vivaldi. Feeds update locally and sync automatically through browser user profiles.
+3. **`[PERSONA-03]` Extension & Local-First Software Engineers:**
+   - *Pain Point:* Bloated extensions with hundreds of npm dependencies, obfuscated bundles, or background scripts that drain laptop battery.
+   - *Solution:* Dependency-free Manifest V3 extension. Pure native JavaScript using standard browser APIs (`chrome.bookmarks`, `chrome.storage.local`, `chrome.alarms`, `chrome.notifications`). Zero bundling, 100% auditable code, service worker terminates after update cycle.
+4. **`[PERSONA-04]` Information Curators & Research Archivists:**
+   - *Pain Point:* Vendor lock-in where exporting feeds is difficult, lossy, or restricted.
+   - *Solution:* Full OPML 2.0 import and export with single-decode entity protection and BOM stripping. Unique folder export generating Windows/OneDrive native `.url` internet shortcut files.
+
+### 2. High-Intent Search Queries (SEO & Discoverability)
+
+**English:**
+- `RSS reader browser extension Chrome Manifest V3`
+- `bookmark-based RSS reader Chrome Edge Brave`
+- `privacy-first RSS reader no account no tracking`
+- `Chrome Web Store RSS feed reader OPML import`
+- `local first RSS reader Chromium bookmarks sync`
+- `Atom feed reader extension no telemetry`
+- `export RSS bookmarks to Windows url files`
+
+**German:**
+- `RSS Reader Browser Erweiterung Chrome Edge Lesezeichen`
+- `Lesezeichen basierter RSS Reader ohne Konto`
+- `Datenschutz RSS Reader Chrome Web Store kostenlos`
+- `RSS Feeds als Browser Lesezeichen synchronisieren`
+- `Manifest V3 RSS Feed Reader Erweiterung Open Source`
+- `OPML Import Export Lesezeichen RSS Reader`
+
+### 3. Store Discoverability & Listing Strategy
+
+- **Chrome Web Store Listing URL:**
+  `https://chromewebstore.google.com/detail/rss-book/aednfjhookicnhcjhjifbaepglinbdli`
+- **Recommended Categories:**
+  - Primary: Productivity / Workflow
+  - Secondary: News & Weather / Tools
+- **Recommended Title Format:**
+  `RSS-BOOK: Bookmark-based RSS & Atom Feed Reader`
+- **Recommended Short Description (132 chars max):**
+  `Privacy-first RSS & Atom feed reader. Saves new feed entries as browser bookmarks for seamless cross-device sync. Zero tracking.`
+- **Edge Add-ons Readiness:**
+  - Automated package command: `npm run package` generates `dist/RSS-BOOK-v1.1.2-edge.zip`.
+  - Submission preflight: `npm run edge-preflight` validates package integrity, store icons, 1280x800 screenshots, and generates `dist/EDGE_ADDONS_PREFLIGHT.md`.
+
+### 4. Competitive Differentiation Matrix
+
+Evaluated against 10 system invariants:
+- `INV-LOCAL-01` (Zero Account Requirement)
+- `INV-LOCAL-02` (Zero Cloud Telemetry & Tracking)
+- `INV-LOCAL-03` (Native Chromium Cross-Device Sync)
+- `INV-LOCAL-04` (Offline & Airplane Mode Bookmark Access)
+- `INV-LOCAL-05` (Manifest V3 Service Worker Standard)
+- `INV-LOCAL-06` (Zero Idle CPU / RAM Footprint)
+- `INV-LOCAL-07` (Export Portability: OPML & Windows .url)
+- `INV-LOCAL-08` (User Data Sovereignty & Native Folder Pruning)
+- `INV-LOCAL-09` (Robust CDATA & XML Entity Decoding)
+- `INV-LOCAL-10` (Open Source MIT & 0 External Dependencies)
+
+### 5. Architectural Diagramming & Banner Guardrails
+
+- Top banner `assets/banner.png` and social preview `assets/social-preview.png` preserved without modification (`HOOK-BANNER-ASSET-01`).
+- Dual Mermaid diagrams implemented in `README.md` and `README_de.md`:
+  1. System Architecture Topology (`flowchart TD`) with quoted labels.
+  2. Lifecycle Sequence Diagram (`sequenceDiagram` with `autonumber`, 0 semicolons) illustrating alarm triggers, HTTP 304 caching, CDATA/Atom parsing, bookmark insertion, and retention cleanup.
+- Diagram syntax validated with `_tools/lint_mermaid.py` (0 errors).

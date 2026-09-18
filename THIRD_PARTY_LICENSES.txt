@@ -3,7 +3,7 @@ RSS-BOOK Third-Party License Inventory
 
 Project: RSS-BOOK
 Project license: MIT, see LICENSE
-Inventory date: 2026-07-14
+Inventory date: 2026-09-18
 
 Scope
 -----
