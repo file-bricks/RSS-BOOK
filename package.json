@@ -4,6 +4,15 @@
   "private": true,
   "type": "module",
   "description": "Privacy-first Manifest V3 RSS/Atom reader that saves feed entries as browser bookmarks.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/file-bricks/RSS-BOOK.git"
+  },
+  "bugs": {
+    "url": "https://github.com/file-bricks/RSS-BOOK/issues"
+  },
+  "homepage": "https://github.com/file-bricks/RSS-BOOK#readme",
   "keywords": [
     "rss",
     "atom",

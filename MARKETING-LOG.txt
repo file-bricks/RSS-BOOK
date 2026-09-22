@@ -82,3 +82,17 @@ Evaluated against 10 system invariants:
   1. System Architecture Topology (`flowchart TD`) with quoted labels.
   2. Lifecycle Sequence Diagram (`sequenceDiagram` with `autonumber`, 0 semicolons) illustrating alarm triggers, HTTP 304 caching, CDATA/Atom parsing, bookmark insertion, and retention cleanup.
 - Diagram syntax validated with `_tools/lint_mermaid.py` (0 errors).
+
+---
+
+## 2026-09-22 — Pfad A Technical Hygiene, CI Hardening & Contract Test Expansion
+
+- **Trigger:** Pfad A Repository-Hygiene, CI-Matrix-Härtung, multi-host .gitignore-Schutz und Vertragstest-Erweiterung (`[GITHUBBOT_ONE_REPO_CLEANER]`).
+- **Target Selection:** Selected via `_tools/repo_radar.py candidates --path a`. 0 locks (`lock_status.py`: UNLOCKED), clean working tree, >56h cooldown.
+- **CI Hardening:** Modernized `.github/workflows/ci.yml` with concurrency group (`cancel-in-progress: true`), job timeout (`timeout-minutes: 15`), official GitHub LTS actions (`actions/checkout@v4`, `actions/setup-node@v4`), and multi-OS/Node test matrix (`[ubuntu-latest, windows-latest]` across Node 20 and 22) including automated Edge preflight and packaging validation.
+- **Workflow Security Guardrails:** Hardened `.github/workflows/stale.yml` and `.github/workflows/welcome.yml` with concurrency groups, job timeouts (`timeout-minutes: 10` and `5`), and upgraded `actions/first-interaction` to `v3`.
+- **Multi-Host & Multi-Agent Lock Protection:** Strengthened `.gitignore` against OneDrive conflict copies (`*conflicted copy*`, `*-WORKSTATION*`, `*-ASUS*`, `*-LAPTOP*`, `*-Mac Studio*`, etc.), lock patterns (`LOCK`, `LOCK.*`, `LOCK*.txt`, `LOCK.permissions.json`, `LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`), build/turbo artifacts, and explicitly preserved `!package-lock.json`.
+- **Package Metadata:** Enriched `package.json` with standard `license`, `repository`, `bugs`, and `homepage` URLs while strictly freezing `version` at `1.1.2` pursuant to T-20260920-167562623.
+- **Security Policy:** Updated `SECURITY.md` with Supported Versions table (`1.1.x`), umbrella & organization security contacts (`security@open-bricks.org`, `security@ellmos.ai`), and 48h initial response SLA (INV-SLA-10).
+- **Automated Contract Tests:** Expanded `tests/metadata.test.mjs` with 5 new contract tests (CI matrix/timeouts, Stale/Welcome guardrails, Gitignore protection, Security SLA, Package metadata); test suite expanded from 80 to 85 tests (100% green).
+- **Documentation & Context Parity:** Synchronized test badges (85 passed) across `README.md` and `README_de.md`, and refreshed `llms.txt` (Last-checked: 2026-09-22, 85 automated tests).

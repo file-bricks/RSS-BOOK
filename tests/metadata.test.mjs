@@ -110,7 +110,7 @@ test("metadata: llms.txt has no merge conflicts, is updated, and reflects archit
   assert.equal(llms.includes("======="), false, "llms.txt contains git merge conflict marker");
   assert.equal(llms.includes(">>>>>>>"), false, "llms.txt contains git merge conflict marker");
 
-  assert.ok(llms.includes("Last-checked: 2026-09-18"), "llms.txt Last-checked must be 2026-09-18");
+  assert.ok(llms.includes("Last-checked: 2026-09-22"), "llms.txt Last-checked must be 2026-09-22");
   assert.ok(llms.includes("[PERSONA-01]"), "llms.txt must reference target personas");
   assert.ok(llms.includes("Quick Navigation"), "llms.txt must reference quick navigation");
 });
@@ -120,4 +120,50 @@ test("metadata: MARKETING-LOG.txt exists and records Pfad B discoverability audi
   const log = readText("MARKETING-LOG.txt");
   assert.ok(log.includes("Pfad B"), "MARKETING-LOG.txt must record Pfad B audit");
   assert.ok(log.includes("2026-09-18"), "MARKETING-LOG.txt must record date 2026-09-18");
+});
+
+test("metadata: CI workflow (.github/workflows/ci.yml) has concurrency, timeout, and multi-OS matrix", () => {
+  const ci = readText(".github/workflows/ci.yml");
+  assert.ok(ci.includes("concurrency:"), "ci.yml must define concurrency group");
+  assert.ok(ci.includes("cancel-in-progress: true"), "ci.yml must cancel in-progress runs");
+  assert.ok(ci.includes("timeout-minutes: 15"), "ci.yml must set job timeout");
+  assert.ok(ci.includes("ubuntu-latest") && ci.includes("windows-latest"), "ci.yml must cover ubuntu and windows matrix");
+  assert.ok(ci.includes("actions/checkout@v4"), "ci.yml must use checkout@v4");
+  assert.ok(ci.includes("actions/setup-node@v4"), "ci.yml must use setup-node@v4");
+  assert.ok(ci.includes("npm run edge-preflight"), "ci.yml must validate edge-preflight");
+  assert.ok(ci.includes("npm run package"), "ci.yml must validate package build");
+});
+
+test("metadata: Stale and Welcome workflows have timeout-minutes and security guardrails", () => {
+  const stale = readText(".github/workflows/stale.yml");
+  const welcome = readText(".github/workflows/welcome.yml");
+  assert.ok(stale.includes("timeout-minutes: 10"), "stale.yml must set timeout-minutes");
+  assert.ok(stale.includes("concurrency:"), "stale.yml must define concurrency");
+  assert.ok(welcome.includes("timeout-minutes: 5"), "welcome.yml must set timeout-minutes");
+  assert.ok(welcome.includes("concurrency:"), "welcome.yml must define concurrency");
+  assert.ok(welcome.includes("actions/first-interaction@v3"), "welcome.yml must use first-interaction@v3");
+});
+
+test("metadata: .gitignore protects against multi-host conflict files and lock patterns", () => {
+  const gitignore = readText(".gitignore");
+  assert.ok(gitignore.includes("*conflicted copy*"), "gitignore must ignore conflicted copies");
+  assert.ok(gitignore.includes("*-WORKSTATION*"), "gitignore must ignore WORKSTATION copies");
+  assert.ok(gitignore.includes("*-ASUS*"), "gitignore must ignore ASUS copies");
+  assert.ok(gitignore.includes("LOCK.user.*"), "gitignore must ignore LOCK.user.*");
+  assert.ok(gitignore.includes("!package-lock.json"), "gitignore must preserve package-lock.json");
+});
+
+test("metadata: SECURITY.md documents supported versions and SLA", () => {
+  const sec = readText("SECURITY.md");
+  assert.ok(sec.includes("1.1.x"), "SECURITY.md must list 1.1.x as supported");
+  assert.ok(sec.includes("security@open-bricks.org"), "SECURITY.md must list umbrella security contact");
+  assert.ok(sec.includes("48"), "SECURITY.md must commit to 48h initial response SLA");
+});
+
+test("metadata: package.json specifies repository, bugs, and homepage metadata", () => {
+  const pkg = JSON.parse(readText("package.json"));
+  assert.equal(pkg.license, "MIT", "package.json license must be MIT");
+  assert.ok(pkg.repository && pkg.repository.url.includes("RSS-BOOK"), "package.json must contain repository url");
+  assert.ok(pkg.bugs && pkg.bugs.url.includes("RSS-BOOK"), "package.json must contain bugs url");
+  assert.ok(pkg.homepage && pkg.homepage.includes("RSS-BOOK"), "package.json must contain homepage url");
 });

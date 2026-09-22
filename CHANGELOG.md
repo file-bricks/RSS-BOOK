@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+### [Pfad A - Hygiene & CI-Härtung] - 2026-09-22
+- **CI Workflow Matrix & Hardening**: Modernized `.github/workflows/ci.yml` with concurrency group (`cancel-in-progress: true`), job timeout (`timeout-minutes: 15`), official GitHub Actions (`actions/checkout@v4`, `actions/setup-node@v4`), and multi-OS/Node test matrix (`[ubuntu-latest, windows-latest]` across Node 20 and 22) including automated Edge preflight and packaging validation.
+- **Workflow Security Guardrails**: Hardened `.github/workflows/stale.yml` and `.github/workflows/welcome.yml` with concurrency groups, job timeouts (`timeout-minutes: 10` and `5`), and upgraded `actions/first-interaction` to `v3`.
+- **Multi-Host & Multi-Agent Lock Protection**: Strengthened `.gitignore` against OneDrive conflict files (`*conflicted copy*`, `*-WORKSTATION*`, `*-ASUS*`, `*-LAPTOP*`, `*-Mac Studio*`, etc.), lock patterns (`LOCK`, `LOCK.*`, `LOCK*.txt`, `LOCK.permissions.json`, `LOCK.user.*`, `LOCK.until.*`, `LOCK.condition.*`), build/turbo artifacts, and explicitly preserved `!package-lock.json`.
+- **Package Metadata**: Enriched `package.json` with standard `license`, `repository`, `bugs`, and `homepage` URLs while strictly freezing `version` at `1.1.2` pursuant to T-20260920-167562623.
+- **Security Policy**: Updated `SECURITY.md` with Supported Versions table (`1.1.x`), umbrella & organization security contacts (`security@open-bricks.org`, `security@ellmos.ai`), and 48h initial response SLA (INV-SLA-10).
+- **Automated Contract Tests**: Expanded `tests/metadata.test.mjs` with 5 new contract tests (CI matrix/timeouts, Stale/Welcome guardrails, Gitignore protection, Security SLA, Package metadata); test suite expanded from 80 to 85 tests (100% green).
+- **Documentation & Context Parity**: Synchronized test badges (85 passed) across `README.md` and `README_de.md`, and refreshed `llms.txt` (Last-checked: 2026-09-22, 85 automated tests).
+
 ### Added
 - Added synchronized 18-point quick navigation with reciprocal HTML anchor parity (`<a id="..."></a>`) across `README.md` and `README_de.md`.
 - Added Target Personas (`[PERSONA-01]` through `[PERSONA-04]`) and high-intent search query blocks for SEO discoverability.

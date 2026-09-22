@@ -1,10 +1,9 @@
-﻿# Interne Dateien
+# Interne Dateien
 AUFGABEN.txt
 TEST.txt
 TESTS.txt
 TESTERGEBNISSE.txt
 RELEASE_PLAN.md
-LOCK*.txt
 .env
 .env.*
 *.pem
@@ -12,6 +11,30 @@ LOCK*.txt
 client_secret*.json
 credentials.json
 token.json
+
+# ---- Multi-Host & Cloud-Sync Konfliktschutz ----
+* (kopie)*
+* (copy)*
+*conflicted copy*
+*-WORKSTATION*
+*-WORKSTATION-LG*
+*-ASUS*
+*-ASUS-GEI*
+*-LAPTOP*
+*-Mac Studio*
+*-MacBook*
+*.sync-temp-*
+*.sync-conflict-*
+
+# ---- Lock-System (Multi-Agent & Host-Schutz) ----
+LOCK
+LOCK.*
+LOCK*.txt
+LOCK.permissions.json
+LOCK.user.*
+LOCK.until.*
+LOCK.condition.*
+!package-lock.json
 
 # OS
 Thumbs.db
@@ -23,7 +46,7 @@ desktop.ini
 .idea/
 .claude/
 
-# Packages
+# Packages & Builds
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -32,13 +55,18 @@ coverage/
 .nyc_output/
 .cache/
 .pytest_cache/
+.turbo/
 *.log
 *.bak
+*.orig
+*.rej
 *.zip
 *.crx
 dist/
 build/
 web-ext-artifacts/
+uv.lock
+
 # ---- Interne Steuerungsdateien ----
 DECISIONS.md
 PORTIERUNGSPLAN.md
