@@ -5,6 +5,19 @@ const feedList = document.getElementById("feedList");
 const statusEl = document.getElementById("status");
 const discoverSection = document.getElementById("discoverSection");
 
+function sanitizeFeedUrl(rawUrl) {
+  if (typeof rawUrl !== "string") return "";
+  const trimmed = rawUrl.trim();
+  if (!trimmed || /[\x00-\x1f\x7f]/.test(trimmed)) return "";
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return "";
+    return /\s/.test(trimmed) ? parsed.href : trimmed;
+  } catch {
+    return "";
+  }
+}
+
 async function render() {
   const feeds = await getAllFeeds();
 
@@ -86,8 +99,11 @@ document.getElementById("discoverBtn").addEventListener("click", async () => {
     }
 
     const res = await chrome.runtime.sendMessage({ action: "discoverFeeds", tabId: tab.id });
-    if (res?.ok && res.feeds.length > 0) {
-      showDiscoveredFeeds(res.feeds);
+    const safeFeeds = Array.isArray(res?.feeds)
+      ? res.feeds.filter((f) => sanitizeFeedUrl(f?.url))
+      : [];
+    if (res?.ok && safeFeeds.length > 0) {
+      showDiscoveredFeeds(safeFeeds);
     } else {
       discoverSection.className = "discover-section";
       showStatus(t("popupNoFeedsFound"), "");
@@ -104,20 +120,30 @@ function showDiscoveredFeeds(feeds) {
   discoverSection.innerHTML = `<div class="discover-info">${t("popupFeedsFound", [String(feeds.length)])}</div>`;
 
   for (const feed of feeds) {
+    const safeUrl = sanitizeFeedUrl(feed.url);
+    if (!safeUrl) continue;
+
     const row = document.createElement("div");
     row.className = "discover-item";
 
     const label = document.createElement("span");
-    label.textContent = feed.title || feed.url;
-    label.title = feed.url;
+    label.textContent = feed.title || safeUrl;
+    label.title = safeUrl;
 
     const addBtn = document.createElement("button");
     addBtn.textContent = "+";
-    addBtn.title = feed.url;
+    addBtn.title = safeUrl;
     addBtn.addEventListener("click", async () => {
+      const existing = await getAllFeeds();
+      if (existing.some((f) => f.url === safeUrl)) {
+        addBtn.textContent = "\u2713";
+        addBtn.disabled = true;
+        return;
+      }
+
       const id = crypto.randomUUID();
       await upsertFeed(id, {
-        url: feed.url,
+        url: safeUrl,
         title: feed.title,
         enabled: true,
         notify: true,
