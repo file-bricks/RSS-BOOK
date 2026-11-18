@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### [Bugsweep - Security & Export Resilience] - 2026-11-18
+- **Bookmark URL Security & Batch Seen-Persistence (`lib/bookmarks.js`)**: Blocked non-HTTP(S) schemes (`javascript:`, `data:`, `file:`, control characters) before `chrome.bookmarks.create` to prevent bookmarklet injection, wrapped batch creation in `try/finally` so `mergeFeedSeen` persists already created entries even if a subsequent bookmark write fails mid-batch, and rejected bookmark leaf nodes (`node.url` set) when resolving stored folder IDs.
+- **Windows `.url` Export Hardening & Collision Disambiguation (`lib/export.js`)**: Restricted exported shortcut URLs to clean `http:`/`https:` targets without control characters (`\r`, `\n`) to prevent `[InternetShortcut]` INI directive injection, and added case-insensitive unique filename/folder allocation (`Title (2).url`, `Folder (2)`) so colliding titles within an export pass no longer overwrite earlier files.
+- **Self-Contained Feed Discovery Guards (`lib/discovery.js`)**: Hardened `collectFeedLinksFromDocument` (preserving zero external closure dependencies for `chrome.scripting.executeScript`) to accept only `http:`/`https:` feed URLs and skip `#fragment`-only page anchors, and prevented `probeCommonFeedPaths` from issuing `null/...` fetches on internal/non-HTTP(S) tabs (`chrome://`, `edge://`, `about:blank`, `file://`).
+- **Astral XML Entities, Relative Feed Links & OPML Scheme Filtering (`lib/rss.js`, `lib/opml.js`)**: Replaced `String.fromCharCode` with range- and surrogate-validated `String.fromCodePoint` decoding so emoji/astral numeric entities (`&#128640;`, `&#x1F680;`) survive intact without `RangeError`, resolved relative RSS/Atom item links against the feed base URL, and filtered unsafe non-HTTP(S) `xmlUrl` entries during OPML parsing.
+- **UI Input Validation & Deduplication (`ui/options.js`, `ui/popup.js`)**: Rejected non-HTTP(S) URLs and duplicate subscriptions when adding feeds manually or from popup discovery, and clamped numeric interval/retention inputs to non-negative integers (`>= 0`).
+- **Regression Coverage (`tests/bugsweep-20261118.test.mjs`)**: Added 7 end-to-end regression tests covering all fixed vectors (test suite: 92 passed, 0 failed).
+
 ### [Pfad A - Hygiene & CI-Härtung] - 2026-09-22
 - **CI Workflow Matrix & Hardening**: Modernized `.github/workflows/ci.yml` with concurrency group (`cancel-in-progress: true`), job timeout (`timeout-minutes: 15`), official GitHub Actions (`actions/checkout@v4`, `actions/setup-node@v4`), and multi-OS/Node test matrix (`[ubuntu-latest, windows-latest]` across Node 20 and 22) including automated Edge preflight and packaging validation.
 - **Workflow Security Guardrails**: Hardened `.github/workflows/stale.yml` and `.github/workflows/welcome.yml` with concurrency groups, job timeouts (`timeout-minutes: 10` and `5`), and upgraded `actions/first-interaction` to `v3`.

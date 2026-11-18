@@ -3,6 +3,25 @@ import { generateOPML, parseOPML } from "../lib/opml.js";
 import { exportAllFeedsToFolder } from "../lib/export.js";
 import { t, applyI18n } from "../lib/i18n.js";
 
+function sanitizeFeedUrl(rawUrl) {
+  if (typeof rawUrl !== "string") return "";
+  const trimmed = rawUrl.trim();
+  if (!trimmed || /[\x00-\x1f\x7f]/.test(trimmed)) return "";
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return "";
+    return /\s/.test(trimmed) ? parsed.href : trimmed;
+  } catch {
+    return "";
+  }
+}
+
+function clampNonNegativeInt(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return 0;
+  return Math.floor(num);
+}
+
 // --- Settings ---
 
 async function loadSettings() {
@@ -16,7 +35,7 @@ async function loadSettings() {
 document.getElementById("saveSettings").addEventListener("click", async () => {
   await updateSettings({
     updateOnStartup: document.getElementById("updateOnStartup").checked,
-    globalIntervalMinutes: Number(document.getElementById("globalInterval").value) || 0,
+    globalIntervalMinutes: clampNonNegativeInt(document.getElementById("globalInterval").value),
     rootFolderName: document.getElementById("rootFolderName").value.trim() || "RSS",
     deleteBookmarksOnUnsubscribe: document.getElementById("deleteBookmarks").checked
   });
@@ -53,8 +72,21 @@ async function loadLifecycle() {
 
 document.getElementById("addBtn").addEventListener("click", async () => {
   const urlInput = document.getElementById("feedUrl");
-  const url = urlInput.value.trim();
-  if (!url) return;
+  const rawUrl = urlInput.value.trim();
+  if (!rawUrl) return;
+
+  const url = sanitizeFeedUrl(rawUrl);
+  if (!url) {
+    showStatus("feedStatus", t("popupError", ["Invalid feed URL"]), true);
+    return;
+  }
+
+  const { feeds } = await getState();
+  if (Object.values(feeds).some((f) => f.url === url)) {
+    urlInput.value = "";
+    await renderFeeds();
+    return;
+  }
 
   const id = crypto.randomUUID();
   await upsertFeed(id, {
@@ -224,7 +256,9 @@ async function renderFeeds() {
       const id = e.target?.dataset?.id;
       if (!field || !id) return;
 
-      const value = e.target.type === "checkbox" ? e.target.checked : Number(e.target.value);
+      const value = e.target.type === "checkbox"
+        ? e.target.checked
+        : clampNonNegativeInt(e.target.value);
       await upsertFeed(id, { [field]: value });
     });
 
