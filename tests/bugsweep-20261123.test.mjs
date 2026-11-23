@@ -540,7 +540,7 @@ test("BS-07: i18n.js works without global chrome.i18n and package-extension.mjs 
 
     // Inject backup, OneDrive A7 conflict, and OS metadata junk inside lib/ and ui/
     fs.writeFileSync(path.join(tempRoot, "lib", "storage_BUGSWEEP_PRE_20260611.js"), "// backup");
-    fs.writeFileSync(path.join(tempRoot, "ui", "options-WORKSTATION-LG.js"), "// conflict");
+    fs.writeFileSync(path.join(tempRoot, "ui", "options-LAPTOP-HOST01.js"), "// conflict");
     fs.writeFileSync(path.join(tempRoot, "ui", "desktop.ini"), "[.ShellClassInfo]");
     fs.writeFileSync(path.join(tempRoot, "lib", "notes.bak"), "bak");
     fs.writeFileSync(path.join(tempRoot, "lib", ".DS_Store"), "junk");
@@ -549,7 +549,7 @@ test("BS-07: i18n.js works without global chrome.i18n and package-extension.mjs 
     const entries = await collectPackageEntries(tempRoot);
     const names = entries.map((e) => e.name);
     assert.equal(names.some((n) => n.includes("BUGSWEEP_PRE")), false, "BUGSWEEP backup files must be excluded from store ZIP");
-    assert.equal(names.some((n) => n.includes("-WORKSTATION-LG")), false, "OneDrive conflict copies must be excluded from store ZIP");
+    assert.equal(names.some((n) => n.includes("-HOST01")), false, "OneDrive conflict copies must be excluded from store ZIP");
     assert.equal(names.some((n) => n.includes("LOCK.")), false, "scoped LOCK files must be excluded from store ZIP");
     assert.equal(names.some((n) => n.endsWith("desktop.ini") || n.endsWith(".bak") || n.endsWith(".DS_Store")), false);
 
@@ -604,4 +604,18 @@ test("BS-08: edge-preflight.mjs rejects truncated/corrupt PNGs without RangeErro
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }
+});
+
+test("BS-02b: storage.js ignores inherited prototype keys in patchExistingFeed and mergeFeedSeen", async () => {
+  const { store, storage } = createAsyncLagStorage({ feeds: {} }, 1);
+  globalThis.chrome = { storage };
+  const { patchExistingFeed, mergeFeedSeen } = await import(`../lib/storage.js?bs02b=${Date.now()}`);
+
+  for (const key of ["__proto__", "constructor", "toString", "hasOwnProperty"]) {
+    assert.equal(await patchExistingFeed(key, { url: "https://example.test/x" }), false, `patchExistingFeed must reject inherited key ${key}`);
+    assert.equal(await mergeFeedSeen(key, { g: 1 }), false, `mergeFeedSeen must reject inherited key ${key}`);
+    assert.equal(Object.hasOwn(store.feeds, key), false, `${key} must not become an own feed entry`);
+  }
+  assert.equal(Object.getPrototypeOf(store.feeds), Object.prototype);
+  assert.deepEqual(Object.keys(store.feeds), []);
 });
