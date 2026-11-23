@@ -1,4 +1,4 @@
-import { getAllFeeds, getLifecycle, getState, removeFeed, updateSettings, upsertFeed } from "../lib/storage.js";
+import { getAllFeeds, getLifecycle, getState, patchExistingFeed, removeFeed, updateSettings, upsertFeed } from "../lib/storage.js";
 import { generateOPML, parseOPML } from "../lib/opml.js";
 import { exportAllFeedsToFolder } from "../lib/export.js";
 import { t, applyI18n } from "../lib/i18n.js";
@@ -13,6 +13,16 @@ function sanitizeFeedUrl(rawUrl) {
     return /\s/.test(trimmed) ? parsed.href : trimmed;
   } catch {
     return "";
+  }
+}
+
+function canonicalizeFeedUrlKey(rawUrl) {
+  const safe = sanitizeFeedUrl(rawUrl);
+  if (!safe) return "";
+  try {
+    return new URL(safe).href;
+  } catch {
+    return safe;
   }
 }
 
@@ -81,8 +91,9 @@ document.getElementById("addBtn").addEventListener("click", async () => {
     return;
   }
 
+  const canonicalKey = canonicalizeFeedUrlKey(url);
   const { feeds } = await getState();
-  if (Object.values(feeds).some((f) => f.url === url)) {
+  if (Object.values(feeds).some((f) => canonicalizeFeedUrlKey(f?.url) === canonicalKey)) {
     urlInput.value = "";
     await renderFeeds();
     return;
@@ -134,14 +145,20 @@ document.getElementById("opmlFileInput").addEventListener("change", async (e) =>
 
     let imported = 0;
     const { feeds } = await getState();
-    const existingUrls = new Set(Object.values(feeds).map(f => f.url));
+    const existingUrls = new Set(
+      Object.values(feeds)
+        .map((f) => canonicalizeFeedUrlKey(f?.url))
+        .filter(Boolean)
+    );
 
     for (const item of parsed) {
-      if (existingUrls.has(item.url)) continue;
+      const safeUrl = sanitizeFeedUrl(item?.url);
+      const key = canonicalizeFeedUrlKey(safeUrl);
+      if (!safeUrl || !key || existingUrls.has(key)) continue;
 
       const id = crypto.randomUUID();
       await upsertFeed(id, {
-        url: item.url,
+        url: safeUrl,
         title: item.title,
         enabled: true,
         notify: true,
@@ -154,7 +171,7 @@ document.getElementById("opmlFileInput").addEventListener("change", async (e) =>
         lastError: "",
         seen: {}
       });
-      existingUrls.add(item.url);
+      existingUrls.add(key);
       imported++;
     }
 
@@ -202,13 +219,15 @@ document.getElementById("exportAllFoldersBtn").addEventListener("click", async (
 
 // --- Feed List ---
 
+const ALLOWED_FEED_FIELDS = new Set(["enabled", "notify", "intervalMinutes", "retentionDays"]);
+
 async function renderFeeds() {
   const { feeds } = await getState();
   const list = document.getElementById("feedList");
   const feedArray = Object.values(feeds);
 
   if (feedArray.length === 0) {
-    list.innerHTML = `<div class="empty">${t("optionsNoFeeds")}</div>`;
+    list.innerHTML = `<div class="empty">${escapeHtml(t("optionsNoFeeds"))}</div>`;
     return;
   }
 
@@ -217,34 +236,35 @@ async function renderFeeds() {
     const card = document.createElement("div");
     card.className = `feed-card${feed.enabled ? "" : " disabled"}${feed.lastError ? " has-error" : ""}`;
 
+    const safeId = escapeHtml(feed.id);
     let errorHtml = "";
     if (feed.lastError) {
-      errorHtml = `<div class="feed-error">${t("optionsFeedError", [escapeHtml(feed.lastError)])}</div>`;
+      errorHtml = `<div class="feed-error">${escapeHtml(t("optionsFeedError", [String(feed.lastError)]))}</div>`;
     }
 
     card.innerHTML = `
       <div class="feed-header">
         <span class="feed-title">${escapeHtml(feed.title || feed.url)}</span>
-        <button class="danger" data-action="remove" data-id="${feed.id}">${t("optionsUnsubscribe")}</button>
+        <button class="danger" data-action="remove" data-id="${safeId}">${escapeHtml(t("optionsUnsubscribe"))}</button>
       </div>
       <div class="feed-url">${escapeHtml(feed.url)}</div>
       ${errorHtml}
       <div class="feed-controls">
         <label>
-          <input type="checkbox" data-field="enabled" data-id="${feed.id}" ${feed.enabled ? "checked" : ""}>
-          ${t("optionsActive")}
+          <input type="checkbox" data-field="enabled" data-id="${safeId}" ${feed.enabled ? "checked" : ""}>
+          ${escapeHtml(t("optionsActive"))}
         </label>
         <label>
-          <input type="checkbox" data-field="notify" data-id="${feed.id}" ${feed.notify ? "checked" : ""}>
-          ${t("optionsNotify")}
+          <input type="checkbox" data-field="notify" data-id="${safeId}" ${feed.notify ? "checked" : ""}>
+          ${escapeHtml(t("optionsNotify"))}
         </label>
         <label>
-          ${t("optionsInterval")}
-          <input type="number" data-field="intervalMinutes" data-id="${feed.id}" value="${feed.intervalMinutes || 0}" min="0">
+          ${escapeHtml(t("optionsInterval"))}
+          <input type="number" data-field="intervalMinutes" data-id="${safeId}" value="${clampNonNegativeInt(feed.intervalMinutes)}" min="0">
         </label>
         <label>
-          ${t("optionsRetention")}
-          <input type="number" data-field="retentionDays" data-id="${feed.id}" value="${feed.retentionDays || 0}" min="0">
+          ${escapeHtml(t("optionsRetention"))}
+          <input type="number" data-field="retentionDays" data-id="${safeId}" value="${clampNonNegativeInt(feed.retentionDays)}" min="0">
         </label>
       </div>
       <div class="feed-actions"></div>
@@ -254,20 +274,25 @@ async function renderFeeds() {
     card.addEventListener("change", async (e) => {
       const field = e.target?.dataset?.field;
       const id = e.target?.dataset?.id;
-      if (!field || !id) return;
+      if (!field || !id || !ALLOWED_FEED_FIELDS.has(field)) return;
 
       const value = e.target.type === "checkbox"
         ? e.target.checked
         : clampNonNegativeInt(e.target.value);
-      await upsertFeed(id, { [field]: value });
+      await patchExistingFeed(id, { [field]: value });
     });
 
     // Remove feed
     card.querySelector("[data-action='remove']").addEventListener("click", async () => {
-      const { settings } = await getState();
-      if (settings.deleteBookmarksOnUnsubscribe && feed.bookmarkFolderId) {
+      const { settings, feeds: latestFeeds } = await getState();
+      const folderId = latestFeeds?.[feed.id]?.bookmarkFolderId || feed.bookmarkFolderId;
+      if (
+        settings.deleteBookmarksOnUnsubscribe &&
+        folderId &&
+        folderId !== settings.rootFolderId
+      ) {
         try {
-          await chrome.bookmarks.removeTree(feed.bookmarkFolderId);
+          await chrome.bookmarks.removeTree(folderId);
         } catch { /* folder already gone */ }
       }
       await removeFeed(feed.id);
@@ -279,9 +304,12 @@ async function renderFeeds() {
 }
 
 function escapeHtml(text) {
-  const div = document.createElement("div");
-  div.textContent = text;
-  return div.innerHTML;
+  return String(text ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 function showStatus(elementId, text, isError) {
@@ -292,9 +320,10 @@ function showStatus(elementId, text, isError) {
 }
 
 function formatTimestamp(value) {
-  if (!value) return t("optionsLifecycleNever");
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return t("optionsLifecycleNever");
   try {
-    return new Date(value).toISOString();
+    return new Date(num).toISOString();
   } catch {
     return t("optionsLifecycleNever");
   }
@@ -302,7 +331,7 @@ function formatTimestamp(value) {
 
 function formatAlarm(lifecycle) {
   const interval = Number(lifecycle.alarmIntervalMinutes) || 0;
-  if (interval <= 0) return t("optionsLifecycleDisabled");
+  if (!Number.isFinite(interval) || interval <= 0) return t("optionsLifecycleDisabled");
   return `${interval} min (${describeAlarmSource(lifecycle.alarmSource)})`;
 }
 
