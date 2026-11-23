@@ -12,7 +12,7 @@ Lesezeichen-basierte RSS- und Atom-Feed-Reader Browser-Erweiterung für Chrome, 
 ![Ecosystem: file-bricks](https://img.shields.io/badge/Ecosystem-file--bricks-4F46E5)
 ![Umbrella: open-bricks](https://img.shields.io/badge/Umbrella-open--bricks-0EA5E9)
 ![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
-![Tests](https://img.shields.io/badge/Tests-100%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/Tests-99%20passed%20%7C%202%20skipped-brightgreen)
 
 RSS-BOOK ist ein datenschutzfreundlicher RSS- und Atom-Feed-Reader für Chromium-Browser.
 Anstatt ein weiteres Konto oder eine Cloud-Datenbank anzulegen, speichert die Erweiterung Feed-Einträge direkt als
