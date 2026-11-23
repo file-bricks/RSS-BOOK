@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { deflateRawSync } from "node:zlib";
@@ -32,6 +33,55 @@ function toZipPath(relativePath) {
   return relativePath.split(path.sep).join("/");
 }
 
+export function isExcludedPackageArtifact(entryName) {
+  if (typeof entryName !== "string" || !entryName) return true;
+  if (entryName.startsWith(".") || entryName.endsWith("~")) return true;
+  if (/^LOCK(\.|$)/i.test(entryName)) return true;
+  if (/^(desktop\.ini|thumbs\.db)$/i.test(entryName)) return true;
+  if (/\.(bak|tmp|orig|rej|swp|old)$/i.test(entryName)) return true;
+  if (/_(BUGSWEEP|BACKUP)_(PRE|FINAL)_/i.test(entryName)) return true;
+  if (/conflicted copy/i.test(entryName)) return true;
+  if (/-(WORKSTATION|ASUS|LAPTOP|MAC[-_ ]?STUDIO)[A-Za-z0-9_-]*(\.[^.]+)?$/i.test(entryName)) {
+    return true;
+  }
+  return false;
+}
+
+function validateSafeOutputFileName(fileName) {
+  if (
+    typeof fileName !== "string" ||
+    !fileName.trim() ||
+    fileName.includes("/") ||
+    fileName.includes("\\") ||
+    fileName === "." ||
+    fileName === ".." ||
+    path.basename(fileName) !== fileName
+  ) {
+    throw new Error(`Invalid outputFile name: ${fileName}`);
+  }
+  return fileName;
+}
+
+async function writeBufferAtomic(targetPath, buffer) {
+  try {
+    const existing = await fs.stat(targetPath);
+    if (existing.isDirectory()) {
+      throw new Error(`Output path is an existing directory: ${targetPath}`);
+    }
+  } catch (err) {
+    if (err.code !== "ENOENT") throw err;
+  }
+
+  const tempPath = `${targetPath}.${process.pid}.${randomUUID()}.tmp`;
+  try {
+    await fs.writeFile(tempPath, buffer);
+    await fs.rename(tempPath, targetPath);
+  } catch (err) {
+    await fs.unlink(tempPath).catch(() => {});
+    throw err;
+  }
+}
+
 function crc32(buffer) {
   let crc = 0xffffffff;
   for (const byte of buffer) {
@@ -41,10 +91,11 @@ function crc32(buffer) {
 }
 
 function dosDateTime(date) {
-  const year = Math.min(Math.max(date.getFullYear(), 1980), 2107);
+  const safeDate = date instanceof Date && Number.isFinite(date.getTime()) ? date : new Date(1980, 0, 1);
+  const year = Math.min(Math.max(safeDate.getFullYear(), 1980), 2107);
   return {
-    date: ((year - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate(),
-    time: (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2),
+    date: ((year - 1980) << 9) | ((safeDate.getMonth() + 1) << 5) | safeDate.getDate(),
+    time: (safeDate.getHours() << 11) | (safeDate.getMinutes() << 5) | Math.floor(safeDate.getSeconds() / 2),
   };
 }
 
@@ -68,6 +119,7 @@ async function collectFiles(rootDir, relativeDir) {
   const files = [];
 
   for (const entry of dirEntries.sort((a, b) => a.name.localeCompare(b.name))) {
+    if (isExcludedPackageArtifact(entry.name)) continue;
     const relativePath = path.join(relativeDir, entry.name);
     if (entry.isDirectory()) {
       files.push(...(await collectFiles(rootDir, relativePath)));
@@ -123,7 +175,7 @@ async function validatePackageEntries(rootDir, entries) {
   try {
     const localeEntries = await fs.readdir(localesDir, { withFileTypes: true });
     for (const entry of localeEntries) {
-      if (entry.isDirectory()) {
+      if (entry.isDirectory() && !isExcludedPackageArtifact(entry.name)) {
         const localeFile = `_locales/${entry.name}/messages.json`;
         if (!names.has(localeFile)) {
           throw new Error(`Locale file is missing from package: ${localeFile}`);
@@ -239,11 +291,11 @@ export async function buildExtensionPackage({
   const entries = await collectPackageEntries(rootDir);
   const { manifest } = await validatePackageEntries(rootDir, entries);
   const archive = await createZip(entries);
-  const fileName = outputFile || `RSS-BOOK-v${manifest.version}-edge.zip`;
+  const fileName = validateSafeOutputFileName(outputFile ?? `RSS-BOOK-v${manifest.version}-edge.zip`);
   const outputPath = path.join(outputDir, fileName);
 
   await fs.mkdir(outputDir, { recursive: true });
-  await fs.writeFile(outputPath, archive);
+  await writeBufferAtomic(outputPath, archive);
 
   const result = {
     outputPath,

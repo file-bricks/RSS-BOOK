@@ -12,7 +12,7 @@ Bookmark-based RSS and Atom feed reader browser extension for Chrome, Edge, Brav
 ![Ecosystem: file-bricks](https://img.shields.io/badge/Ecosystem-file--bricks-4F46E5)
 ![Umbrella: open-bricks](https://img.shields.io/badge/Umbrella-open--bricks-0EA5E9)
 ![CI](https://github.com/file-bricks/RSS-BOOK/actions/workflows/ci.yml/badge.svg)
-![Tests](https://img.shields.io/badge/Tests-92%20passed-brightgreen)
+![Tests](https://img.shields.io/badge/Tests-100%20passed-brightgreen)
 
 RSS-BOOK is a privacy-first RSS and Atom feed reader for Chromium browsers.
 Instead of creating another account or cloud database, it saves feed entries as
@@ -349,7 +349,7 @@ RSS-BOOK/
 RSS-BOOK has **zero external build or bundling dependencies**. It executes natively on Node.js built-in test runner:
 
 ```bash
-# Run the complete test suite (92 passed tests | 100% green)
+# Run the complete test suite (100 automated tests | 100% green)
 npm test
 ```
 

@@ -5,6 +5,15 @@ const feedList = document.getElementById("feedList");
 const statusEl = document.getElementById("status");
 const discoverSection = document.getElementById("discoverSection");
 
+function escapeHtml(text) {
+  return String(text ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function sanitizeFeedUrl(rawUrl) {
   if (typeof rawUrl !== "string") return "";
   const trimmed = rawUrl.trim();
@@ -18,11 +27,36 @@ function sanitizeFeedUrl(rawUrl) {
   }
 }
 
+function canonicalizeFeedUrlKey(rawUrl) {
+  const safe = sanitizeFeedUrl(rawUrl);
+  if (!safe) return "";
+  try {
+    return new URL(safe).href;
+  } catch {
+    return safe;
+  }
+}
+
+async function resolveValidBookmarkFolderId(folderId) {
+  if (typeof folderId !== "string" || !folderId.trim()) return "";
+  const trimmed = folderId.trim();
+  if (!globalThis.chrome?.bookmarks?.get) return trimmed;
+  try {
+    const nodes = await chrome.bookmarks.get(trimmed);
+    if (nodes?.[0]?.id && !nodes[0].url) {
+      return String(nodes[0].id);
+    }
+    return "";
+  } catch {
+    return "";
+  }
+}
+
 async function render() {
   const feeds = await getAllFeeds();
 
   if (feeds.length === 0) {
-    feedList.innerHTML = `<div class="empty">${t("popupNoFeeds")}</div>`;
+    feedList.innerHTML = `<div class="empty">${escapeHtml(t("popupNoFeeds"))}</div>`;
     return;
   }
 
@@ -33,16 +67,17 @@ async function render() {
 
     const name = document.createElement("span");
     name.className = "feed-name";
-    name.textContent = feed.title || feed.url;
-    name.title = feed.url;
+    name.textContent = feed.title || feed.url || "";
+    name.title = feed.url || "";
 
     const info = document.createElement("div");
     info.className = "feed-info";
 
     const time = document.createElement("span");
     time.className = "feed-count";
-    if (feed.lastFetch) {
-      const ago = Math.round((Date.now() - feed.lastFetch) / 60000);
+    const lastFetchTs = Number(feed.lastFetch);
+    if (Number.isFinite(lastFetchTs) && lastFetchTs > 0) {
+      const ago = Math.max(0, Math.round((Date.now() - lastFetchTs) / 60000));
       time.textContent = ago < 1 ? t("popupJustNow") : t("popupMinAgo", [String(ago)]);
     } else {
       time.textContent = t("popupNeverUpdated");
@@ -99,8 +134,14 @@ document.getElementById("discoverBtn").addEventListener("click", async () => {
     }
 
     const res = await chrome.runtime.sendMessage({ action: "discoverFeeds", tabId: tab.id });
+    const seenDiscovered = new Set();
     const safeFeeds = Array.isArray(res?.feeds)
-      ? res.feeds.filter((f) => sanitizeFeedUrl(f?.url))
+      ? res.feeds.filter((f) => {
+          const key = canonicalizeFeedUrlKey(f?.url);
+          if (!key || seenDiscovered.has(key)) return false;
+          seenDiscovered.add(key);
+          return true;
+        })
       : [];
     if (res?.ok && safeFeeds.length > 0) {
       showDiscoveredFeeds(safeFeeds);
@@ -117,11 +158,12 @@ document.getElementById("discoverBtn").addEventListener("click", async () => {
 
 function showDiscoveredFeeds(feeds) {
   discoverSection.className = "discover-section visible";
-  discoverSection.innerHTML = `<div class="discover-info">${t("popupFeedsFound", [String(feeds.length)])}</div>`;
+  discoverSection.innerHTML = `<div class="discover-info">${escapeHtml(t("popupFeedsFound", [String(feeds.length)]))}</div>`;
 
   for (const feed of feeds) {
     const safeUrl = sanitizeFeedUrl(feed.url);
-    if (!safeUrl) continue;
+    const canonicalKey = canonicalizeFeedUrlKey(safeUrl);
+    if (!safeUrl || !canonicalKey) continue;
 
     const row = document.createElement("div");
     row.className = "discover-item";
@@ -135,7 +177,7 @@ function showDiscoveredFeeds(feeds) {
     addBtn.title = safeUrl;
     addBtn.addEventListener("click", async () => {
       const existing = await getAllFeeds();
-      if (existing.some((f) => f.url === safeUrl)) {
+      if (existing.some((f) => canonicalizeFeedUrlKey(f?.url) === canonicalKey)) {
         addBtn.textContent = "\u2713";
         addBtn.disabled = true;
         return;
@@ -175,11 +217,12 @@ function showDiscoveredFeeds(feeds) {
 // Open feeds in bookmark manager
 document.getElementById("openFeedsBtn").addEventListener("click", async () => {
   const settings = await getSettings();
-  const folderId = settings.rootFolderId || "";
-  const isEdge = navigator.userAgent.includes("Edg/");
+  const folderId = await resolveValidBookmarkFolderId(settings.rootFolderId || "");
+  const isEdge = typeof navigator !== "undefined" && String(navigator.userAgent || "").includes("Edg/");
+  const encodedQuery = folderId ? `?id=${encodeURIComponent(folderId)}` : "";
   const url = isEdge
-    ? `edge://favorites/${folderId ? "?id=" + folderId : ""}`
-    : `chrome://bookmarks/${folderId ? "?id=" + folderId : ""}`;
+    ? `edge://favorites/${encodedQuery}`
+    : `chrome://bookmarks/${encodedQuery}`;
   await chrome.tabs.create({ url });
   window.close();
 });
